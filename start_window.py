@@ -30,16 +30,16 @@ class Start_Window:
     def main_cycle(self, clock):
         while True:
             time_delta = clock.tick(FPS) / 1000.0
+            try_exit = ""
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return 0
                 if event.type == pygame.USEREVENT:
-                    time_delta = clock.tick(60) / 1000.0
-                    if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+                    if event.user_type == pygame_gui.UI_BUTTON_START_PRESS + 3:
                         if event.ui_element == self.start_button:
-                            return 1
+                            return "game"
                         if event.ui_element == self.setting_button:
-                            return 2
+                            return "setting"
                         self.manager.process_events(event)
             self.manager.update(time_delta=time_delta)
             self.window_surface.blit(self.background, (0, 0))
