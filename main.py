@@ -8,6 +8,7 @@ from character import Digger
 from first_location import Grass, Mine
 from setting import *
 from start_window import Start_Window
+from settings_window import Settings_Window
 
 
 def load_image(name, colorkey=None):
@@ -64,4 +65,11 @@ if __name__ == '__main__':
             clock.tick(FPS)
 
     elif start.next_window == "setting":
-        Setting()
+        start = Settings_Window(load_image("texture/sett_bg.jpg"), clock)
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+            screen.fill((0, 0, 0))
+            clock.tick(FPS)
+            pygame.display.flip()
