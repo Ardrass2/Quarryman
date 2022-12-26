@@ -69,7 +69,9 @@ if __name__ == '__main__':
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    pygame.quit()
+                    running = False
+
             screen.fill((0, 0, 0))
             clock.tick(FPS)
             pygame.display.flip()
+        pygame.quit()

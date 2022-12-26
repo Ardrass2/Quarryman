@@ -22,9 +22,11 @@ class Digger(pygame.sprite.Sprite):
             if not self.some:
                 self.some = True
                 self.image = pygame.transform.flip(self.image, True, False)
-            self.rect = self.rect.move(args[1], 0)
+            if not self.rect[0] >= WIDTH * 0.87:
+                self.rect = self.rect.move(args[1], 0)
         elif args[0] == pygame.K_a:
             if self.some:
                 self.some = False
                 self.image = pygame.transform.flip(self.image, True, False)
-            self.rect = self.rect.move(-args[1], 0)
+            if not self.rect[0] <= -(WIDTH * 0.06):
+                self.rect = self.rect.move(-args[1], 0)

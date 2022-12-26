@@ -13,9 +13,11 @@ class Settings_Window:
         self.bg = pygame.transform.scale(background, (WIDTH, HEIGHT))
         self.manager = pygame_gui.UIManager((WIDTH, HEIGHT))
         self.manager.get_theme().load_theme('theme.json')
-        self.selection_volume = pygame_gui.elements.UIHorizontalScrollBar(
+
+        self.selection_volume = pygame_gui.elements.UIHorizontalSlider(
             relative_rect=pygame.Rect((WIDTH // 2 - (WIDTH * 0.15), HEIGHT - (HEIGHT * 0.6)),
-                                      (WIDTH * 0.5, HEIGHT * 0.081)), visible_percentage=True, manager=self.manager)
+                                      (WIDTH * 0.5, HEIGHT * 0.081)),
+            start_value=50, value_range=(0, 100), manager=self.manager)
 
         self.label = pygame_gui.elements.UILabel(
             relative_rect=pygame.Rect((WIDTH // 2 - (WIDTH * 0.25), HEIGHT - (HEIGHT * 0.975)),
@@ -38,11 +40,12 @@ class Settings_Window:
                                       (WIDTH * 0.5, HEIGHT * 0.081)), options_list=['В окне', 'На весь экран'],
             starting_option='Полный экран', manager=self.manager)
 
-        self.selection_volume_music = pygame_gui.elements.UIHorizontalScrollBar(
+        self.selection_volume_music = pygame_gui.elements.UIHorizontalSlider(
             relative_rect=pygame.Rect((WIDTH // 2 - (WIDTH * 0.15), HEIGHT - (HEIGHT * 0.5)),
-                                      (WIDTH * 0.5, HEIGHT * 0.081)), visible_percentage=True, manager=self.manager)
+                                      (WIDTH * 0.5, HEIGHT * 0.081)),
+            start_value=50, value_range=(0, 100), manager=self.manager)
 
-        self.next_window = self.main_cycle(clock)
+        self.main_cycle(clock)
 
     def main_cycle(self, clock):
         while True:
@@ -52,9 +55,7 @@ class Settings_Window:
                     return 0
                 if event.type == pygame.USEREVENT:
                     time_delta = clock.tick(60) / 1000.0
-                    if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-                        if event.ui_element == self.selection_resolution:
-                            return 1
+                    if event.user_type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
                         if event.ui_element == self.selection_volume_music:
                             return 2
                         if event.ui_element == self.selection_volume:
