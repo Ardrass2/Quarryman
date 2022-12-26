@@ -15,7 +15,7 @@ class Grass(pygame.sprite.Sprite):
 class Mine(pygame.sprite.Sprite):
     def __init__(self, mine_img, all_sprites):
         super().__init__(all_sprites)
-        self.image = pygame.transform.scale(mine_img, (WIDTH * 0.3, HEIGHT * 0.2))
+        self.image = pygame.transform.scale(mine_img, (WIDTH * 0.3, HEIGHT * 0.3))
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
-        self.rect.top = HEIGHT - HEIGHT // 2
+        self.rect.top = HEIGHT * 2 // 3 - HEIGHT * 0.3

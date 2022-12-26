@@ -9,15 +9,17 @@ class Digger(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(character_image, (WIDTH * 0.2, HEIGHT * 0.3))
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
-        self.rect.top = 0
+        self.rect.top = HEIGHT * 2 // 3 - HEIGHT * 0.25
         self.rect.left = WIDTH // 2
         self.some = False
 
     def update(self, *args):
-        if type(args[0]) != int:
+        if type(args[0]) != int and type(args[1]) != int:
             if not pygame.sprite.collide_mask(self, args[0]):
                 self.rect = self.rect.move(0, 1)
                 x, y = self.rect[0], self.rect[1]
+            if pygame.sprite.collide_mask(self, args[1]):
+                pass
         if args[0] == pygame.K_d:
             if not self.some:
                 self.some = True

@@ -39,6 +39,11 @@ if __name__ == '__main__':
     clock = pygame.time.Clock()
     running = True
     start = Start_Window(load_image("texture/cave.jpg"), clock)
+    if start.next_window == "setting":
+        while start.next_window == "setting":
+            setting_window = Settings_Window(load_image("texture/sett_bg.jpg"), clock)
+            if setting_window.back == "back":
+                start.next_window = start.main_cycle(clock)
     if start.next_window == "game":
         grass = Grass(load_image("texture/трава.png"), all_sprites)
         digger = Digger(load_image("texture/character.png"), all_sprites)
@@ -59,19 +64,7 @@ if __name__ == '__main__':
                     flag = False
                     digger.update(event.key, speed, flag)
             screen.blit(bg, (0, 0))
-            all_sprites.update(grass, flag)
+            all_sprites.update(grass, mine)
             all_sprites.draw(screen)
             pygame.display.flip()
             clock.tick(FPS)
-
-    elif start.next_window == "setting":
-        start = Settings_Window(load_image("texture/sett_bg.jpg"), clock)
-        while running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-
-            screen.fill((0, 0, 0))
-            clock.tick(FPS)
-            pygame.display.flip()
-        pygame.quit()

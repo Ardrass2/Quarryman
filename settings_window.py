@@ -1,9 +1,7 @@
-import os
-
 import pygame
 import pygame_gui
 
-from setting import WIDTH, HEIGHT, FPS
+from setting import *
 
 
 class Settings_Window:
@@ -45,7 +43,7 @@ class Settings_Window:
                                       (WIDTH * 0.5, HEIGHT * 0.081)),
             start_value=50, value_range=(0, 100), manager=self.manager)
 
-        self.main_cycle(clock)
+        self.back = self.main_cycle(clock)
 
     def main_cycle(self, clock):
         while True:
@@ -53,6 +51,9 @@ class Settings_Window:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return 0
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        return "back"
                 if event.type == pygame.USEREVENT:
                     time_delta = clock.tick(60) / 1000.0
                     if event.user_type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
