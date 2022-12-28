@@ -4,13 +4,14 @@ import pygame
 import pygame_gui
 
 from setting import WIDTH, HEIGHT, FPS
+from function import *
 
 
 class Start_Window:
-    def __init__(self, background, clock):
+    def __init__(self, clock):
 
         self.window_surface = pygame.display.set_mode((WIDTH, HEIGHT))
-        self.background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+        self.background = pygame.transform.scale(load_image("texture/cave.jpg"), (WIDTH, HEIGHT))
         self.manager = pygame_gui.UIManager((WIDTH, HEIGHT))
         self.manager.get_theme().load_theme('theme.json')
         self.start_button = pygame_gui.elements.UIButton(
@@ -32,15 +33,14 @@ class Start_Window:
             time_delta = clock.tick(FPS) / 1000.0
             try_exit = ""
             for event in pygame.event.get():
+                self.manager.process_events(event)
                 if event.type == pygame.QUIT:
-                    return 0
-                if event.type == pygame.USEREVENT:
-                    if event.user_type == pygame_gui.UI_BUTTON_START_PRESS + 3:
-                        if event.ui_element == self.start_button:
-                            return "game"
-                        if event.ui_element == self.setting_button:
-                            return "setting"
-                        self.manager.process_events(event)
+                    terminate()
+                if event.type == pygame_gui.UI_BUTTON_PRESSED:
+                    if event.ui_element == self.start_button:
+                        return "game"
+                    if event.ui_element == self.setting_button:
+                        return "setting"
             self.manager.update(time_delta=time_delta)
             self.window_surface.blit(self.background, (0, 0))
             self.manager.draw_ui(self.window_surface)

@@ -7,5 +7,3 @@ FPS = 60
 MUSIC_VOLUME = 1
 # Громкость звуков
 SOUND_VOLUME = 1
-
-
