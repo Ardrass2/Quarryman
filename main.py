@@ -11,7 +11,7 @@ from start_window import Start_Window
 if __name__ == '__main__':
     pygame.init()
     pygame.display.set_caption('Копатель')
-    size = WIDTH, HEIGHT
+    size = width, height
     music = Music()
     all_sprites = pygame.sprite.Group()
     screen = pygame.display.set_mode(size)
@@ -26,7 +26,7 @@ if __name__ == '__main__':
         grass = Grass(all_sprites)
         digger = Digger(all_sprites)
         mine = Mine(all_sprites)
-        bg = pygame.transform.scale(load_image("texture/sky.png"), (WIDTH, HEIGHT * 2 // 3))
+        bg = pygame.transform.scale(load_image("texture/sky.png"), (width, height * 2 // 3))
         screen.blit(bg, (0, 0))
         while True:
             flag = True

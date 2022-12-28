@@ -5,11 +5,11 @@ from setting import *
 class Digger(pygame.sprite.Sprite):
     def __init__(self, all_sprites):
         super().__init__(all_sprites)
-        self.image = pygame.transform.scale(load_image("texture/character.png"), (WIDTH * 0.2, HEIGHT * 0.3))
+        self.image = pygame.transform.scale(load_image("texture/character.png"), (width * 0.2, height * 0.3))
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
-        self.rect.top = HEIGHT * 2 // 3 - HEIGHT * 0.25
-        self.rect.left = WIDTH // 2
+        self.rect.top = height * 2 // 3 - height * 0.25
+        self.rect.left = width // 2
         self.some = False
         self.left_or_right = 0
         self.speed = 7
@@ -34,5 +34,5 @@ class Digger(pygame.sprite.Sprite):
                 self.some = False
                 self.image = pygame.transform.flip(self.image, True, False)
             self.left_or_right = -1
-        if not self.rect[0] >= WIDTH * 0.87 and not self.rect[0] <= -(WIDTH * 0.06):
+        if not self.rect[0] >= width * 0.87 and not self.rect[0] <= -(width * 0.06):
             self.rect = self.rect.move(self.left_or_right * self.speed, 0)

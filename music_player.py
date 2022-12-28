@@ -2,12 +2,12 @@ import random
 
 import pygame
 
-from setting import MUSIC_VOLUME
+from setting import music_volume
 
 
 class Music:
     def __init__(self):
-        self.value = MUSIC_VOLUME
+        self.value = music_volume
         self.rand_music()
         pygame.mixer.music.play(0)
         pygame.mixer.music.set_volume(self.value)
