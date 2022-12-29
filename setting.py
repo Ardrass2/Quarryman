@@ -1,9 +1,9 @@
 # размер экрана
-width = 1280
-height = 720
+width = 1600
+height = 900
 # Кадры в секунду
 FPS = 60
 # Громкость музыки
-music_volume = 1
+music_volume = 0
 # Громкость звуков
 sound_volume = 1

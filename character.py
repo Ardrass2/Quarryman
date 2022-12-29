@@ -1,3 +1,5 @@
+import pygame_gui.windows
+
 from function import *
 from setting import *
 
@@ -6,6 +8,7 @@ class Digger(pygame.sprite.Sprite):
     def __init__(self, all_sprites):
         super().__init__(all_sprites)
         self.image = pygame.transform.scale(load_image("texture/character.png"), (width * 0.2, height * 0.3))
+        self.manager = pygame_gui.UIManager((width, height))
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
         self.rect.top = height * 2 // 3 - height * 0.25
@@ -19,11 +22,8 @@ class Digger(pygame.sprite.Sprite):
             if not pygame.sprite.collide_mask(self, args[0]):
                 self.rect = self.rect.move(0, 1)
                 x, y = self.rect[0], self.rect[1]
-            if pygame.sprite.collide_mask(self, args[1]):
-                self.speed = 0
         if not args[1]:
             self.left_or_right = 0
-            print(self.left_or_right)
         elif args[0] == pygame.K_d:
             if not self.some:
                 self.some = True
@@ -36,3 +36,13 @@ class Digger(pygame.sprite.Sprite):
             self.left_or_right = -1
         if not self.rect[0] >= width * 0.87 and not self.rect[0] <= -(width * 0.06):
             self.rect = self.rect.move(self.left_or_right * self.speed, 0)
+        else:
+            if self.rect[0] > width * 0.5:
+                self.rect[0] = width * 0.87
+            else:
+                self.rect[0] = -width * 0.06
+
+    def check_collide(self, sprite):
+        if pygame.sprite.collide_mask(self, sprite):
+            return True
+
