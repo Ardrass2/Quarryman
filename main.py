@@ -1,7 +1,8 @@
 # Quarryman GAME
+import pygame_gui
 
 from character import Digger
-from first_location import Grass, Mine
+from first_location import *
 from function import *
 from music_player import *
 from setting import *
@@ -24,16 +25,33 @@ if __name__ == '__main__':
                 start.next_window = start.main_cycle(clock)
     if start.next_window == "game":
         grass = Grass(all_sprites)
-        digger = Digger(all_sprites)
         mine = Mine(all_sprites)
+        shop = Shop(all_sprites)
+        digger = Digger(all_sprites)
         bg = pygame.transform.scale(load_image("texture/sky.png"), (width, height * 2 // 3))
         screen.blit(bg, (0, 0))
+        press_e = None
+        manager = pygame_gui.UIManager((width, height))
+        manager.get_theme().load_theme('game_theme.json')
+
         while True:
+            time_delta = clock.tick(FPS) / 1000.0
             flag = True
+            if (digger.check_collide(mine) or digger.check_collide(shop)) and press_e is None:
+                press_e = pygame_gui.elements.UILabel(manager=manager, text="Нажмите E, чтобы войти",
+                                                      relative_rect=pygame.Rect((width * 0.5, 0),
+                                                                                (width * 0.5, height * 0.1)),
+                                                      object_id=pygame_gui.core.ObjectID(class_id='@game_text',
+                                                                                         object_id='#help_text'))
+            elif not (digger.check_collide(mine) or digger.check_collide(shop)) and press_e is not None:
+                press_e = None
+                manager.clear_and_reset()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     terminate()
                 if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_e and digger.check_collide(mine) or digger.check_collide(shop):
+                        print("yes")
                     flag = True
                     digger.update(event.key, flag)
                 if event.type == pygame.KEYUP:
@@ -42,5 +60,7 @@ if __name__ == '__main__':
             screen.blit(bg, (0, 0))
             all_sprites.update(grass, mine)
             all_sprites.draw(screen)
+            manager.update(time_delta=time_delta)
+            manager.draw_ui(screen)
             pygame.display.flip()
             clock.tick(FPS)

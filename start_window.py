@@ -31,7 +31,6 @@ class Start_Window:
     def main_cycle(self, clock):
         while True:
             time_delta = clock.tick(FPS) / 1000.0
-            try_exit = ""
             for event in pygame.event.get():
                 self.manager.process_events(event)
                 if event.type == pygame.QUIT:

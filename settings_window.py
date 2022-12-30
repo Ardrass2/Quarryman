@@ -58,7 +58,6 @@ class Settings_Window:
                 if event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
                     if event.ui_element == self.selection_volume_music:
                         self.music.change_volume(event.value / 100)
-                        print(music_volume)
                     if event.ui_element == self.selection_volume:
                         pass
                 if event.type == pygame_gui.UI_SELECTION_LIST_DROPPED_SELECTION:
