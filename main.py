@@ -1,15 +1,18 @@
 # Quarryman GAME
+import pygame.sprite
 import pygame_gui
 
-from character import Digger
+from character import *
 from first_location import *
 from function import *
+from mining_location import *
 from music_player import *
 from setting import *
 from settings_window import Settings_Window
 from start_window import Start_Window
 
-if __name__ == '__main__':
+
+def main():
     pygame.init()
     pygame.display.set_caption('Копатель')
     size = width, height
@@ -27,7 +30,7 @@ if __name__ == '__main__':
         grass = Grass(all_sprites)
         mine = Mine(all_sprites)
         shop = Shop(all_sprites)
-        digger = Digger(all_sprites)
+        digger = Digger(all_sprites, load_image("texture/miner.png"), 10, 5)
         bg = pygame.transform.scale(load_image("texture/sky.png"), (width, height * 2 // 3))
         screen.blit(bg, (0, 0))
         press_e = None
@@ -50,8 +53,10 @@ if __name__ == '__main__':
                 if event.type == pygame.QUIT:
                     terminate()
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_e and digger.check_collide(mine) or digger.check_collide(shop):
+                    if event.key == pygame.K_e and digger.check_collide(mine):
                         print("yes")
+                    if event.key == pygame.K_e and digger.check_collide(shop):
+                        print("Shop")
                     flag = True
                     digger.update(event.key, flag)
                 if event.type == pygame.KEYUP:
@@ -64,3 +69,8 @@ if __name__ == '__main__':
             manager.draw_ui(screen)
             pygame.display.flip()
             clock.tick(FPS)
+
+
+if __name__ == '__main__':
+    main()
+    sys.excepthook = except_hook

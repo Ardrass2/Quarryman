@@ -10,6 +10,7 @@ def terminate():
 
 
 def load_image(name, colorkey=None):
+    # Оагрузка изображения
     fullname = os.path.join('data', name)
     # если файл не существует, то выходим
     if not os.path.isfile(fullname):
@@ -26,3 +27,8 @@ def load_image(name, colorkey=None):
         image = image.convert_alpha()
 
     return image
+
+
+def except_hook(cls, exception, traceback):
+    # Отлов ошибок
+    sys.__excepthook__(cls, exception, traceback)
