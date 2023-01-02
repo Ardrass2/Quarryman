@@ -54,7 +54,8 @@ def main():
                     terminate()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_e and digger.check_collide(mine):
-                        print("yes")
+                        tiles_group = pygame.sprite.Group()
+                        generate_mine(all_sprites, tiles_group)
                     if event.key == pygame.K_e and digger.check_collide(shop):
                         print("Shop")
                     flag = True

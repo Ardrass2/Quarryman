@@ -16,7 +16,7 @@ class Digger(pygame.sprite.Sprite):
         self.cut_sheet("stay")
         self.cur_frame = 0
         self.image = pygame.transform.scale(self.frames[self.cur_frame], (width * 0.1, height * 0.2))
-        self.rect.top = height * 2 // 3 - height * 0.3
+        self.rect.top = height * 2 // 3 - height * 0.2
         self.rect.left = width // 2
         self.some = False
         self.left_or_right = 0
