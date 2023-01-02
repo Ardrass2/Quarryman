@@ -3,6 +3,7 @@ import pygame_gui
 
 from character import Digger
 from first_location import *
+from mining_location import *
 from function import *
 from music_player import *
 from setting import *
@@ -51,7 +52,8 @@ if __name__ == '__main__':
                     terminate()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_e and digger.check_collide(mine) or digger.check_collide(shop):
-                        print("yes")
+                        tiles_group = pygame.sprite.Group()
+                        generate_mine(all_sprites, tiles_group)
                     flag = True
                     digger.update(event.key, flag)
                 if event.type == pygame.KEYUP:
