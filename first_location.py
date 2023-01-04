@@ -1,7 +1,5 @@
-import pygame
-
-from setting import *
 from function import *
+from setting import *
 
 
 class Grass(pygame.sprite.Sprite):

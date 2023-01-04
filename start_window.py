@@ -1,10 +1,7 @@
-import os
-
-import pygame
 import pygame_gui
 
-from setting import width, height, FPS
 from function import *
+from setting import width, height, FPS
 
 
 class Start_Window:
