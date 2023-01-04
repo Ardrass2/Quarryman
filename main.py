@@ -3,6 +3,7 @@ import pygame.sprite
 import pygame_gui
 
 from character import *
+from camera import *
 from first_location import *
 from mining_location import *
 from music_player import *
@@ -23,6 +24,10 @@ def start_mine():
             if event.type == pygame.KEYDOWN:
                 flag = True
                 digger.update(tiles_group, event.key)
+        camera = Camera()
+        camera.update(digger)
+        for sprite in all_sprites:
+            camera.apply(sprite)
         screen.blit(bg, (0, 0))
         tiles_group.update()
         tiles_group.draw(screen)
