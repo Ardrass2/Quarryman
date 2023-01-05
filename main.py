@@ -2,13 +2,14 @@
 import pygame.sprite
 import pygame_gui
 
-from character import *
 from camera import *
+from character import *
 from first_location import *
 from mining_location import *
 from music_player import *
 from setting import *
 from settings_window import Settings_Window
+from shop import Inside_Shop
 from start_window import Start_Window
 
 
@@ -22,6 +23,11 @@ def start_mine():
             if event.type == pygame.QUIT:
                 terminate()
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    digger.kill()
+                    for elem in tiles_group:
+                        elem.kill()
+                    return upper_world_cycle()
                 flag = True
                 digger.update(tiles_group, event.key)
         camera = Camera()
@@ -70,7 +76,7 @@ def upper_world_cycle():
                     generate_mine(all_sprites, tiles_group)
                     start_mine()
                 if event.key == pygame.K_e and digger.check_collide(shop):
-                    print("Shop")
+                    Inside_Shop(clock)
                 flag = True
                 digger.update(event.key, flag)
             if event.type == pygame.KEYUP:
