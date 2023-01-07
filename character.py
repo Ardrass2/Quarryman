@@ -6,8 +6,10 @@ from setting import *
 
 
 class Miner(pygame.sprite.Sprite):
-    def __init__(self, all_sprites, sheet, columns, rows):
+
+    def __init__(self, all_sprites, sheet, columns, rows, level_map):
         super().__init__(all_sprites)
+        self.level_map = level_map
         self.action = {"stay": 2,
                        "run": 1,
                        "d_under_person": 0,
@@ -15,14 +17,20 @@ class Miner(pygame.sprite.Sprite):
         self.sheet = sheet
         self.columns, self.rows = columns, rows
         self.frames = []
+        self.need_destroy = False
         self.now_action = ""
         self.time = 0
         self.cut_sheet("stay")
         self.cur_frame = 0
-        self.image = pygame.transform.scale(self.frames[self.cur_frame], (width * 0.1, height * 0.2))
-        self.rect.center = width // 2 - 15, height // 2 + 25
+        self.image = pygame.transform.scale(self.frames[self.cur_frame], (TILE_SIZE, TILE_SIZE - 10))
+        self.rect.top = level_map[0][len(level_map[0]) // 2][1]
+        self.rect.left = level_map[0][len(level_map[0]) // 2][0]
+        self.level_map[0][len(level_map[0]) // 2] = (0, 0)
+        self.cell_x, self.cell_y = len(level_map[0]) // 2, 0
+        print(self.cell_x)
         self.some = False
-        self.act = [0, 0]
+        self.key = str()
+        self.act = False
 
     def cut_sheet(self, action):
         self.frames = []
@@ -41,46 +49,92 @@ class Miner(pygame.sprite.Sprite):
         self.cut_sheet(action)
         self.rect[0], self.rect[1] = own_rect[0], own_rect[1]
 
-    def update(self, ground, key_down=0):
-        if len(pygame.sprite.spritecollide(self, ground, False, collided=pygame.sprite.collide_mask)) == 0:
+    def update(self, ground):
+        if len(self.collide_with(ground)) == 0:
             self.rect = self.rect.move(0, 1)
         if self.time == 5:
             if self.cur_frame == len(self.frames) - 1:
+                self.act = False
                 self.change_action("stay")
-                self.rect = self.rect.move(self.act[0], self.act[1])
-                if self.act != [0, 0]:
-                    self.collide_with(ground)
-                    self.act = [0, 0]
+                if self.key == "s":
+                    self.key = ""
+                    for elem in self.collide_with(ground):
+                        elem.kill()
+                        self.rect = self.rect.move(0, TILE_SIZE - 2)
+                        self.cell_y += 1
+                if self.key == "d":
+                    self.key = ""
+                    no_blocks = True
+                    for elem in ground:
+                        if elem.rect[0] == self.rect[0] + TILE_SIZE and elem.rect[1] == self.rect[1] - 11:
+                            elem.kill()
+                            no_blocks = False
+                            break
+                    if no_blocks:
+                        self.rect = self.rect.move(TILE_SIZE, 0)
+                        self.cell_x = self.cell_x + 1
+                if self.key == "a":
+                    self.key = ""
+                    no_blocks = True
+                    for elem in ground:
+                        if elem.rect[0] == self.rect[0] - TILE_SIZE and elem.rect[1] == self.rect[1] - 11:
+                            elem.kill()
+                            no_blocks = False
+                            break
+                    if no_blocks:
+                        self.rect = self.rect.move(-TILE_SIZE, 0)
+                        self.cell_x = self.cell_x - 1
             self.cur_frame = (self.cur_frame + 1) % len(self.frames)
-            self.image = pygame.transform.scale(self.frames[self.cur_frame], (width * 0.1, height * 0.2))
+            self.image = pygame.transform.scale(self.frames[self.cur_frame], (TILE_SIZE, TILE_SIZE - 10))
             if self.some:
                 self.some = True
                 self.image = pygame.transform.flip(self.image, True, False)
             self.time = 0
         else:
             self.time += 1
+
+    def move(self, key_down):
         if key_down == pygame.K_s:
-            self.act = [0, TILE_SIZE - 10]
-            self.cur_frame = 0
-            self.change_action("d_under_person")
+            if not self.act:
+                self.act = True
+                self.key = "s"
+                if self.level_map[self.cell_y + 1][self.cell_x] != (0, 0):
+                    self.cur_frame = 0
+                    self.level_map[self.cell_y + 1][self.cell_x] = (0, 0)
+                    self.change_action("d_under_person")
         if key_down == pygame.K_d:
-            self.act = [TILE_SIZE - 2, -10]
-            self.cur_frame = 0
-            self.change_action("d_on_corner")
-            if not self.some:
-                self.some = True
-                self.image = pygame.transform.flip(self.image, True, False)
+            if not self.act:
+                if self.cell_x + 1 != len(self.level_map[self.cell_y]):
+                    self.act = True
+                    self.key = "d"
+                    if self.level_map[self.cell_y][self.cell_x + 1] != (0, 0):
+                        self.cur_frame = 0
+                        self.level_map[self.cell_y][self.cell_x + 1] = (0, 0)
+                        self.change_action("d_on_corner")
+                    else:
+                        self.change_action("run")
+                        self.cur_frame = 8
+                if not self.some:
+                    self.some = True
+                    self.image = pygame.transform.flip(self.image, True, False)
         if key_down == pygame.K_a:
-            self.act = [-TILE_SIZE + 2, -10]
-            self.change_action("d_on_corner")
-            if self.some:
-                self.some = False
-                self.image = pygame.transform.flip(self.image, True, False)
+            if not self.act:
+                if self.cell_x - 1 != -1:
+                    self.act = True
+                    self.key = "a"
+                    if self.level_map[self.cell_y][self.cell_x - 1] != (0, 0):
+                        self.cur_frame = 0
+                        self.level_map[self.cell_y][self.cell_x - 1] = (0, 0)
+                        self.change_action("d_on_corner")
+                    else:
+                        self.change_action("run")
+                        self.cur_frame = 8
+                if self.some:
+                    self.some = False
+                    self.image = pygame.transform.flip(self.image, True, False)
 
     def collide_with(self, sprites):
-        if not pygame.sprite.spritecollide(self, sprites, True, collided=pygame.sprite.collide_mask):
-            return False
-        return True
+        return pygame.sprite.spritecollide(self, sprites, False, collided=pygame.sprite.collide_mask)
 
 
 class Digger(pygame.sprite.Sprite):

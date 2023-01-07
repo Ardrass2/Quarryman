@@ -1,4 +1,5 @@
 # Quarryman GAME
+
 import pygame.sprite
 import pygame_gui
 
@@ -12,11 +13,23 @@ from settings_window import Settings_Window
 from shop import Inside_Shop
 from start_window import Start_Window
 
+level_map = []
+
+
+def mine_update():
+    tiles_group.update()
+    tiles_group.draw(screen)
+    all_sprites.update(tiles_group)
+    all_sprites.draw(screen)
+    all_borders.update()
+    all_borders.draw(screen)
+
 
 def start_mine():
-    digger = Miner(all_sprites, load_image("texture/miner.png"), 10, 5)
+    digger = Miner(all_sprites, load_image("texture/miner.png"), 10, 5, level_map)
     bg = pygame.transform.scale(load_image("texture/cave_mining.jpg"), (width, height))
     screen.blit(bg, (0, 0))
+    camera = Camera()
     while True:
         time_delta = clock.tick(FPS) / 1000.0
         for event in pygame.event.get():
@@ -28,18 +41,12 @@ def start_mine():
                     for elem in tiles_group:
                         elem.kill()
                     return upper_world_cycle()
-                flag = True
-                digger.update(tiles_group, event.key)
-        camera = Camera()
+                digger.move(event.key)
+        screen.blit(bg, (0, 0))
         camera.update(digger)
         for sprite in all_sprites:
             camera.apply(sprite)
-        screen.blit(bg, (0, 0))
-        tiles_group.update()
-        tiles_group.draw(screen)
-        all_sprites.update(tiles_group)
-        all_sprites.draw(screen)
-
+        mine_update()
         pygame.display.flip()
         clock.tick(FPS)
 
@@ -73,7 +80,9 @@ def upper_world_cycle():
                     for elem in all_sprites:
                         elem.kill()
                     manager.clear_and_reset()
-                    generate_mine(all_sprites, tiles_group)
+                    global level_map
+                    level_map = generate_mine(all_sprites, tiles_group)
+                    generate_borders(all_sprites, all_borders)
                     start_mine()
                 if event.key == pygame.K_e and digger.check_collide(shop):
                     Inside_Shop(clock)
@@ -108,6 +117,7 @@ if __name__ == '__main__':
     size = width, height
     music = Music()
     all_sprites = pygame.sprite.Group()
+    all_borders = pygame.sprite.Group()
     tiles_group = pygame.sprite.Group()
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
