@@ -4,6 +4,7 @@ import pygame.sprite
 import pygame_gui
 
 from camera import *
+from fire import *
 from character import *
 from first_location import *
 from mining_location import *
@@ -28,6 +29,12 @@ def mine_update():
 def start_mine():
     digger = Miner(all_sprites, load_image("texture/miner.png"), 10, 5, level_map)
     bg = pygame.transform.scale(load_image("texture/cave_mining.jpg"), (width, height))
+    manager = pygame_gui.UIManager((width, height))
+    manager.get_theme().load_theme('theme.json')
+    scores = 10
+    score = pygame_gui.elements.UILabel(
+        relative_rect=pygame.Rect((width * 0.45, height * 0.005),
+                                  (width * 0.9, height * 0.08)), text="score - " + str(scores) + ' ', manager=manager)
     screen.blit(bg, (0, 0))
     camera = Camera()
     while True:
@@ -47,6 +54,8 @@ def start_mine():
         for sprite in all_sprites:
             camera.apply(sprite)
         mine_update()
+        manager.update(time_delta=time_delta)
+        manager.draw_ui(screen)
         pygame.display.flip()
         clock.tick(FPS)
 
