@@ -24,7 +24,7 @@ class Miner(pygame.sprite.Sprite):
         self.cur_frame = 0
         self.image = pygame.transform.scale(self.frames[self.cur_frame], (TILE_SIZE, TILE_SIZE - 10))
         self.rect.top = level_map[0][len(level_map[0]) // 2][1]
-        self.rect.left = level_map[0][len(level_map[0]) // 2][0]
+        self.rect.left = level_map[0][len(level_map[0]) // 2][0] + width * 0.1
         self.level_map[0][len(level_map[0]) // 2] = (0, 0)
         self.cell_x, self.cell_y = len(level_map[0]) // 2, 0
         print(self.cell_x)

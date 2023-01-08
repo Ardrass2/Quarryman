@@ -91,6 +91,8 @@ def upper_world_cycle():
                     manager.clear_and_reset()
                     global level_map
                     level_map = generate_mine(all_sprites, tiles_group)
+                    #  for elem in level_map:
+                    #   print(elem)
                     generate_borders(all_sprites, all_borders)
                     start_mine()
                 if event.key == pygame.K_e and digger.check_collide(shop):
