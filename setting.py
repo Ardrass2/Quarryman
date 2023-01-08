@@ -1,9 +1,9 @@
-# размер экрана
-width = 1600
-height = 900
+from function import *
 # Кадры в секунду
 FPS = 60
+# Размер экрана
+width, height = update_window_size()
 # Громкость музыки
-music_volume = 0
+music_volume = update_music_value()
 # Громкость звуков
-sound_volume = 1
+sound_volume = update_sound_value()

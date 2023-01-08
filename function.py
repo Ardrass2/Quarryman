@@ -29,6 +29,81 @@ def load_image(name, colorkey=None):
     return image
 
 
+def change_window_size(size):
+    settings_in = open("setting.txt", "r")
+    settings_out = open("sett.txt", "w")
+    for elem in settings_in.readlines():
+        if elem.startswith("width="):
+            settings_out.write("width=" + str(size[0]) + "\n")
+        elif elem.startswith("height="):
+            settings_out.write("height=" + str(size[1]) + "\n")
+        else:
+            settings_out.write(elem)
+    settings_in.close()
+    settings_out.close()
+    os.remove("setting.txt")
+    os.rename("sett.txt", "setting.txt")
+
+
+def update_window_size():
+    with open("setting.txt") as setting:
+        for elem in setting:
+            if elem.startswith("width="):
+                width = elem.rstrip()[6:]
+            if elem.startswith("height="):
+                height = elem.rstrip()[7:]
+
+    return int(width), int(height)
+
+
+def update_sound_value():
+    sound_value = 0
+    with open("setting.txt") as setting:
+        for elem in setting:
+            if elem.startswith("sound_value="):
+                sound_value = elem.rstrip()[12:]
+
+    return int(sound_value) / 100
+
+
+def update_music_value():
+    music_value = 0
+    with open("setting.txt") as setting:
+        for elem in setting:
+            if elem.startswith("music_value="):
+                music_value = elem.rstrip()[12:]
+
+    return int(music_value) / 100
+
+
+def change_music_value(new_value):
+    settings_in = open("setting.txt", "r")
+    settings_out = open("sett.txt", "w")
+    for elem in settings_in.readlines():
+        if elem.startswith("music_value="):
+            settings_out.write("music_value=" + str(new_value) + "\n")
+        else:
+            settings_out.write(elem)
+    settings_in.close()
+    settings_out.close()
+    os.remove("setting.txt")
+    os.rename("sett.txt", "setting.txt")
+
+
+def change_sound_value(new_value):
+    settings_in = open("setting.txt", "r")
+    settings_out = open("sett.txt", "w")
+    for elem in settings_in.readlines():
+        if elem.startswith("sound_value="):
+            settings_out.write("sound_value=" + str(new_value) + "\n")
+        else:
+            settings_out.write(elem)
+    settings_in.close()
+    settings_out.close()
+    os.remove("setting.txt")
+    os.rename("sett.txt", "setting.txt")
+
+
 def except_hook(cls, exception, traceback):
     # Отлов ошибок
     sys.__excepthook__(cls, exception, traceback)

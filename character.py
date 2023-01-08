@@ -2,11 +2,11 @@ import pygame.sprite
 
 from function import *
 from mining_location import TILE_SIZE
+from music_player import Sound
 from setting import *
 
 
 class Miner(pygame.sprite.Sprite):
-
     def __init__(self, all_sprites, sheet, columns, rows, level_map):
         super().__init__(all_sprites)
         self.level_map = level_map
@@ -27,7 +27,6 @@ class Miner(pygame.sprite.Sprite):
         self.rect.left = level_map[0][len(level_map[0]) // 2][0] + width * 0.1
         self.level_map[0][len(level_map[0]) // 2] = (0, 0)
         self.cell_x, self.cell_y = len(level_map[0]) // 2, 0
-        print(self.cell_x)
         self.some = False
         self.key = str()
         self.act = False
@@ -52,6 +51,7 @@ class Miner(pygame.sprite.Sprite):
     def update(self, ground):
         if len(self.collide_with(ground)) == 0:
             self.rect = self.rect.move(0, 1)
+
         if self.time == 5:
             if self.cur_frame == len(self.frames) - 1:
                 self.act = False
@@ -62,6 +62,7 @@ class Miner(pygame.sprite.Sprite):
                         elem.kill()
                         self.rect = self.rect.move(0, TILE_SIZE - 2)
                         self.cell_y += 1
+
                 if self.key == "d":
                     self.key = ""
                     no_blocks = True
@@ -73,6 +74,7 @@ class Miner(pygame.sprite.Sprite):
                     if no_blocks:
                         self.rect = self.rect.move(TILE_SIZE, 0)
                         self.cell_x = self.cell_x + 1
+
                 if self.key == "a":
                     self.key = ""
                     no_blocks = True
@@ -84,6 +86,9 @@ class Miner(pygame.sprite.Sprite):
                     if no_blocks:
                         self.rect = self.rect.move(-TILE_SIZE, 0)
                         self.cell_x = self.cell_x - 1
+
+                pygame.mixer.music.stop()
+
             self.cur_frame = (self.cur_frame + 1) % len(self.frames)
             self.image = pygame.transform.scale(self.frames[self.cur_frame], (TILE_SIZE, TILE_SIZE - 10))
             if self.some:
@@ -94,41 +99,49 @@ class Miner(pygame.sprite.Sprite):
             self.time += 1
 
     def move(self, key_down):
+
         if key_down == pygame.K_s:
             if not self.act:
                 self.act = True
                 self.key = "s"
                 if self.level_map[self.cell_y + 1][self.cell_x] != (0, 0):
+                    Sound("stone_destroy (2)", 1)
                     self.cur_frame = 0
                     self.level_map[self.cell_y + 1][self.cell_x] = (0, 0)
                     self.change_action("d_under_person")
+
         if key_down == pygame.K_d:
             if not self.act:
                 if self.cell_x + 1 != len(self.level_map[self.cell_y]):
                     self.act = True
                     self.key = "d"
                     if self.level_map[self.cell_y][self.cell_x + 1] != (0, 0):
+                        Sound("stone_destroy (2)", 2)
                         self.cur_frame = 0
                         self.level_map[self.cell_y][self.cell_x + 1] = (0, 0)
                         self.change_action("d_on_corner")
                     else:
                         self.change_action("run")
                         self.cur_frame = 8
+                        Sound("steps", 1)
                 if not self.some:
                     self.some = True
                     self.image = pygame.transform.flip(self.image, True, False)
+
         if key_down == pygame.K_a:
             if not self.act:
                 if self.cell_x - 1 != -1:
                     self.act = True
                     self.key = "a"
                     if self.level_map[self.cell_y][self.cell_x - 1] != (0, 0):
+                        Sound("stone_destroy (2)", 2)
                         self.cur_frame = 0
                         self.level_map[self.cell_y][self.cell_x - 1] = (0, 0)
                         self.change_action("d_on_corner")
                     else:
                         self.change_action("run")
                         self.cur_frame = 8
+                        Sound("steps", 1)
                 if self.some:
                     self.some = False
                     self.image = pygame.transform.flip(self.image, True, False)
@@ -155,6 +168,7 @@ class Digger(pygame.sprite.Sprite):
         self.left_or_right = 0
         self.speed = 7
         self.time = 0
+        self.sound = None
 
     def cut_sheet(self, action):
         self.frames = []
@@ -168,6 +182,9 @@ class Digger(pygame.sprite.Sprite):
         self.frames = self.frames[::-1]
 
     def update(self, *args):
+        if self.left_or_right == 0:
+            pygame.mixer.music.stop()
+
         if self.time == 5:
             self.cur_frame = (self.cur_frame + 1) % len(self.frames)
             self.image = pygame.transform.scale(self.frames[self.cur_frame], (width * 0.1, height * 0.2))
@@ -177,15 +194,18 @@ class Digger(pygame.sprite.Sprite):
             self.time = 0
         else:
             self.time += 1
+
         if type(args[0]) != int and type(args[1]) != int:
             if not self.check_collide(args[0]):
                 self.rect = self.rect.move(0, 1)
+
         if not args[1]:
             if self.now_action != "stay":
                 own_rect = self.rect[0], self.rect[1]
                 self.cut_sheet("stay")
                 self.rect[0], self.rect[1] = own_rect[0], own_rect[1]
             self.left_or_right = 0
+
         elif args[0] == pygame.K_d:
             if self.now_action != "run":
                 own_rect = self.rect[0], self.rect[1]
@@ -195,6 +215,8 @@ class Digger(pygame.sprite.Sprite):
                 self.some = True
                 self.image = pygame.transform.flip(self.image, True, False)
             self.left_or_right = 1
+            self.sound = Sound("steps")
+
         elif args[0] == pygame.K_a:
             if self.now_action != "run":
                 own_rect = self.rect[0], self.rect[1]
@@ -204,6 +226,8 @@ class Digger(pygame.sprite.Sprite):
                 self.some = False
                 self.image = pygame.transform.flip(self.image, True, False)
             self.left_or_right = -1
+            self.sound = Sound("steps")
+
         if not self.rect[0] >= width * 0.9 and not self.rect[0] <= -(width * 0.01):
             self.rect = self.rect.move(self.left_or_right * self.speed, 0)
         else:

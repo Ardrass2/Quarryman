@@ -1,0 +1,5 @@
+width=1600
+height=900
+music_value=12
+sound_value=71
+
