@@ -55,7 +55,7 @@ class Miner(pygame.sprite.Sprite):
                 if self.key == "s":
                     self.key = ""
                     for elem in ground:
-                        print(elem.rect[1], self.rect[1] - 11 + width * 0.1)
+                        print(elem.rect[1], self.rect[1] - 11 + window.width * 0.1)
                         if self.right_corner:
                             if elem.rect[0] == self.rect[0] + TILE_SIZE and elem.rect[1] == self.rect[1] - 11:
                                 elem.kill()
@@ -191,9 +191,9 @@ class Digger(pygame.sprite.Sprite):
         self.now_action = ""
         self.cut_sheet("stay")
         self.cur_frame = 0
-        self.image = pygame.transform.scale(self.frames[self.cur_frame], (width * 0.1, height * 0.2))
-        self.rect.top = height * 2 // 3 - height * 0.2
-        self.rect.left = width // 2
+        self.image = pygame.transform.scale(self.frames[self.cur_frame], (window.width * 0.1, window.height * 0.2))
+        self.rect.top = window.height * 2 // 3 - window.height * 0.2
+        self.rect.left = window.width // 2
         self.some = False
         self.left_or_right = 0
         self.speed = 7
@@ -217,7 +217,7 @@ class Digger(pygame.sprite.Sprite):
 
         if self.time == 5:
             self.cur_frame = (self.cur_frame + 1) % len(self.frames)
-            self.image = pygame.transform.scale(self.frames[self.cur_frame], (width * 0.1, height * 0.2))
+            self.image = pygame.transform.scale(self.frames[self.cur_frame], (window.width * 0.1, window.height * 0.2))
             if self.some:
                 self.some = True
                 self.image = pygame.transform.flip(self.image, True, False)
@@ -258,11 +258,11 @@ class Digger(pygame.sprite.Sprite):
             self.left_or_right = -1
             self.sound = Sound("steps")
 
-        if not self.rect[0] >= width * 0.9 and not self.rect[0] <= -(width * 0.01):
+        if not self.rect[0] >= window.width * 0.9 and not self.rect[0] <= -(window.width * 0.01):
             self.rect = self.rect.move(self.left_or_right * self.speed, 0)
         else:
-            if self.rect[0] > width * 0.5:
-                self.rect[0] = width * 0.87
+            if self.rect[0] > window.width * 0.5:
+                self.rect[0] = window.width * 0.87
             else:
                 self.rect[0] = 0
 

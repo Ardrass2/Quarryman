@@ -1,28 +1,31 @@
 import pygame_gui
 
 from function import *
-from setting import width, height, FPS
+from setting import window, FPS
 
 
 class Start_Window:
     def __init__(self, clock):
 
-        self.window_surface = pygame.display.set_mode((width, height))
-        self.background = pygame.transform.scale(load_image("texture/cave.jpg"), (width, height))
-        self.manager = pygame_gui.UIManager((width, height))
+        self.window_surface = pygame.display.set_mode((window.width, window.height))
+        self.background = pygame.transform.scale(load_image("texture/cave.jpg"), (window.width, window.height))
+        self.manager = pygame_gui.UIManager((window.width, window.height))
         self.manager.get_theme().load_theme('theme.json')
         self.start_button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((width // 2 - (width * 0.25), height // 2 - (height * 0.05)),
-                                      (width * 0.5, height * 0.1)),
+            relative_rect=pygame.Rect(
+                (window.width // 2 - (window.width * 0.25), window.height // 2 - (window.height * 0.05)),
+                (window.width * 0.5, window.height * 0.1)),
             text="Начать игру", manager=self.manager)
         self.setting_button = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect(
-                (width // 2 - (width * 0.25), height // 2 - (height * 0.05) + height * 0.1),
-                (width * 0.5, height * 0.1)),
+                (window.width // 2 - (window.width * 0.25),
+                 window.height // 2 - (window.height * 0.05) + window.height * 0.1),
+                (window.width * 0.5, window.height * 0.1)),
             text="Настройки", manager=self.manager)
         self.label = pygame_gui.elements.UILabel(
-            relative_rect=pygame.Rect((width // 2 - (width * 0.25), height // 2 - (height * 0.05) - height * 0.1),
-                                      (width * 0.5, height * 0.1)), text="КОПАТЕЛЬ", manager=self.manager)
+            relative_rect=pygame.Rect((window.width // 2 - (window.width * 0.25),
+                                       window.height // 2 - (window.height * 0.05) - window.height * 0.1),
+                                      (window.width * 0.5, window.height * 0.1)), text="КОПАТЕЛЬ", manager=self.manager)
         self.next_window = self.main_cycle(clock)
 
     def main_cycle(self, clock):

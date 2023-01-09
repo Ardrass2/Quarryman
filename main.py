@@ -28,13 +28,13 @@ def mine_update():
 
 def start_mine():
     digger = Miner(all_sprites, load_image("texture/miner.png"), 10, 5, level_map)
-    bg = pygame.transform.scale(load_image("texture/cave_mining.jpg"), (width, height))
-    manager = pygame_gui.UIManager((width, height))
+    bg = pygame.transform.scale(load_image("texture/cave_mining.jpg"), (window.width, window.height))
+    manager = pygame_gui.UIManager((window.width, window.height))
     manager.get_theme().load_theme('theme.json')
     scores = 10
     score = pygame_gui.elements.UILabel(
-        relative_rect=pygame.Rect((width * 0.45, height * 0.005),
-                                  (width * 0.9, height * 0.08)), text="score - " + str(scores) + ' ', manager=manager)
+        relative_rect=pygame.Rect((window.width * 0.45, window.height * 0.005),
+                                  (window.width * 0.9, window.height * 0.08)), text="score - " + str(scores) + ' ', manager=manager)
     screen.blit(bg, (0, 0))
     camera = Camera()
     while True:
@@ -65,17 +65,17 @@ def upper_world_cycle():
     mine = Mine(all_sprites)
     shop = Shop(all_sprites)
     digger = Digger(all_sprites, load_image("texture/miner.png"), 10, 5)
-    bg = pygame.transform.scale(load_image("texture/sky.png"), (width, height * 2 // 3))
+    bg = pygame.transform.scale(load_image("texture/sky.png"), (window.width, window.height * 2 // 3))
     press_e = None
-    manager = pygame_gui.UIManager((width, height))
+    manager = pygame_gui.UIManager((window.width, window.height))
     manager.get_theme().load_theme('game_theme.json')
 
     while True:
         time_delta = clock.tick(FPS) / 1000.0
         if (digger.check_collide(mine) or digger.check_collide(shop)) and press_e is None:
             press_e = pygame_gui.elements.UILabel(manager=manager, text="Нажмите E, чтобы войти",
-                                                  relative_rect=pygame.Rect((width * 0.5, 0),
-                                                                            (width * 0.5, height * 0.1)),
+                                                  relative_rect=pygame.Rect((window.width * 0.5, 0),
+                                                                            (window.width * 0.5, window.height * 0.1)),
                                                   object_id=pygame_gui.core.ObjectID(class_id='@game_text',
                                                                                      object_id='#help_text'))
         elif not (digger.check_collide(mine) or digger.check_collide(shop)) and press_e is not None:
@@ -125,7 +125,7 @@ def first_step():
 if __name__ == '__main__':
     pygame.init()
     pygame.display.set_caption('Копатель')
-    size = width, height
+    size = window.width, window.height
     music = Music()
     chests_group = pygame.sprite.Group()
     all_sprites = pygame.sprite.Group()
