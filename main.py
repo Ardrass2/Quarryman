@@ -90,9 +90,9 @@ def upper_world_cycle():
                         elem.kill()
                     manager.clear_and_reset()
                     global level_map
-                    level_map = generate_mine(all_sprites, tiles_group)
-                    #  for elem in level_map:
-                    #   print(elem)
+                    level_map = generate_mine(all_sprites, tiles_group, chests_group)
+                    # for elem in level_map:
+                    #     print(len(elem))
                     generate_borders(all_sprites, all_borders)
                     start_mine()
                 if event.key == pygame.K_e and digger.check_collide(shop):
@@ -127,6 +127,7 @@ if __name__ == '__main__':
     pygame.display.set_caption('Копатель')
     size = width, height
     music = Music()
+    chests_group = pygame.sprite.Group()
     all_sprites = pygame.sprite.Group()
     all_borders = pygame.sprite.Group()
     tiles_group = pygame.sprite.Group()

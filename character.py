@@ -1,6 +1,5 @@
 import pygame.sprite
 
-from function import *
 from mining_location import TILE_SIZE
 from music_player import Sound
 from setting import *
@@ -23,11 +22,11 @@ class Miner(pygame.sprite.Sprite):
         self.cut_sheet("stay")
         self.cur_frame = 0
         self.image = pygame.transform.scale(self.frames[self.cur_frame], (TILE_SIZE, TILE_SIZE - 10))
-        self.rect.top = level_map[0][len(level_map[0]) // 2][1]
-        self.rect.left = level_map[0][len(level_map[0]) // 2][0] + width * 0.1
+        self.rect.top = level_map[0][len(level_map[0]) // 2][1] + 11
+        self.rect.left = level_map[0][len(level_map[0]) // 2][0]
         self.level_map[0][len(level_map[0]) // 2] = (0, 0)
         self.cell_x, self.cell_y = len(level_map[0]) // 2, 0
-        self.some = False
+        self.right_corner = False
         self.key = str()
         self.act = False
 
@@ -49,19 +48,26 @@ class Miner(pygame.sprite.Sprite):
         self.rect[0], self.rect[1] = own_rect[0], own_rect[1]
 
     def update(self, ground):
-        if len(self.collide_with(ground)) == 0:
-            self.rect = self.rect.move(0, 1)
-
-        if self.time == 5:
+        if self.time == 1:
             if self.cur_frame == len(self.frames) - 1:
                 self.act = False
                 self.change_action("stay")
                 if self.key == "s":
                     self.key = ""
-                    for elem in self.collide_with(ground):
-                        elem.kill()
-                        self.rect = self.rect.move(0, TILE_SIZE - 2)
-                        self.cell_y += 1
+                    for elem in ground:
+                        print(elem.rect[1], self.rect[1] - 11 + width * 0.1)
+                        if self.right_corner:
+                            if elem.rect[0] == self.rect[0] + TILE_SIZE and elem.rect[1] == self.rect[1] - 11:
+                                elem.kill()
+                            if elem.rect[0] == self.rect[0] + TILE_SIZE and \
+                                    elem.rect[1] == self.rect[1] - 11 + TILE_SIZE:
+                                elem.kill()
+                        else:
+                            if elem.rect[0] == self.rect[0] - TILE_SIZE and \
+                                    elem.rect[1] == self.rect[1] - 11 + TILE_SIZE:
+                                elem.kill()
+                            if elem.rect[0] == self.rect[0] - TILE_SIZE and elem.rect[1] == self.rect[1] - 11:
+                                elem.kill()
 
                 if self.key == "d":
                     self.key = ""
@@ -74,6 +80,9 @@ class Miner(pygame.sprite.Sprite):
                     if no_blocks:
                         self.rect = self.rect.move(TILE_SIZE, 0)
                         self.cell_x = self.cell_x + 1
+                        while len(self.collide_with(ground)) == 0:
+                            self.rect = self.rect.move(0, TILE_SIZE)
+                            self.cell_y = self.cell_y + 1
 
                 if self.key == "a":
                     self.key = ""
@@ -86,14 +95,17 @@ class Miner(pygame.sprite.Sprite):
                     if no_blocks:
                         self.rect = self.rect.move(-TILE_SIZE, 0)
                         self.cell_x = self.cell_x - 1
+                        while len(self.collide_with(ground)) == 0:
+                            self.rect = self.rect.move(0, TILE_SIZE)
+                            self.cell_y = self.cell_y + 1
 
                 pygame.mixer.music.stop()
 
             self.cur_frame = (self.cur_frame + 1) % len(self.frames)
             self.image = pygame.transform.scale(self.frames[self.cur_frame], (TILE_SIZE, TILE_SIZE - 10))
-            if self.some:
-                self.some = True
-                self.image = pygame.transform.flip(self.image, True, False)
+            if self.right_corner:
+                self.right_corner = False
+                self.change_view_side()
             self.time = 0
         else:
             self.time += 1
@@ -102,21 +114,30 @@ class Miner(pygame.sprite.Sprite):
 
         if key_down == pygame.K_s:
             if not self.act:
-                self.act = True
-                self.key = "s"
-                if self.level_map[self.cell_y + 1][self.cell_x] != (0, 0):
-                    Sound("stone_destroy (2)", 1)
-                    self.cur_frame = 0
-                    self.level_map[self.cell_y + 1][self.cell_x] = (0, 0)
-                    self.change_action("d_under_person")
+                if self.cell_x + 1 != len(self.level_map[self.cell_y]) and self.cell_x - 1 >= 0:
+                    self.act = True
+                    self.key = "s"
+                    if self.right_corner and self.level_map[self.cell_y + 1][self.cell_x + 1] != (0, 0):
+                        Sound("stone_destroy", 1)
+                        self.cur_frame = 0
+                        self.level_map[self.cell_y + 1][self.cell_x + 1] = (0, 0)
+                        self.level_map[self.cell_y][self.cell_x + 1] = (0, 0)
+                        self.change_action("d_under_person")
+                    if not self.right_corner and self.level_map[self.cell_y + 1][self.cell_x - 1] != (0, 0):
+                        Sound("stone_destroy", 1)
+                        self.cur_frame = 0
+                        self.level_map[self.cell_y + 1][self.cell_x - 1] = (0, 0)
+                        self.level_map[self.cell_y][self.cell_x - 1] = (0, 0)
+                        self.change_action("d_under_person")
 
-        if key_down == pygame.K_d:
+        elif key_down == pygame.K_d:
             if not self.act:
                 if self.cell_x + 1 != len(self.level_map[self.cell_y]):
                     self.act = True
                     self.key = "d"
-                    if self.level_map[self.cell_y][self.cell_x + 1] != (0, 0):
-                        Sound("stone_destroy (2)", 2)
+                    if self.level_map[self.cell_y][self.cell_x + 1] != (0, 0) and \
+                            self.level_map[self.cell_y][self.cell_x + 1] != (-1, -1):
+                        Sound("stone_destroy", 2)
                         self.cur_frame = 0
                         self.level_map[self.cell_y][self.cell_x + 1] = (0, 0)
                         self.change_action("d_on_corner")
@@ -124,17 +145,17 @@ class Miner(pygame.sprite.Sprite):
                         self.change_action("run")
                         self.cur_frame = 8
                         Sound("steps", 1)
-                if not self.some:
-                    self.some = True
-                    self.image = pygame.transform.flip(self.image, True, False)
+                if not self.right_corner:
+                    self.change_view_side()
 
-        if key_down == pygame.K_a:
+        elif key_down == pygame.K_a:
             if not self.act:
                 if self.cell_x - 1 != -1:
                     self.act = True
                     self.key = "a"
-                    if self.level_map[self.cell_y][self.cell_x - 1] != (0, 0):
-                        Sound("stone_destroy (2)", 2)
+                    if self.level_map[self.cell_y][self.cell_x - 1] != (0, 0) and \
+                            self.level_map[self.cell_y][self.cell_x - 1] != (-1, -1):
+                        Sound("stone_destroy", 2)
                         self.cur_frame = 0
                         self.level_map[self.cell_y][self.cell_x - 1] = (0, 0)
                         self.change_action("d_on_corner")
@@ -142,9 +163,18 @@ class Miner(pygame.sprite.Sprite):
                         self.change_action("run")
                         self.cur_frame = 8
                         Sound("steps", 1)
-                if self.some:
-                    self.some = False
-                    self.image = pygame.transform.flip(self.image, True, False)
+                if self.right_corner:
+                    self.change_view_side()
+        elif key_down == pygame.K_RIGHT:
+            if not self.right_corner:
+                self.change_view_side()
+        elif key_down == pygame.K_LEFT:
+            if self.right_corner:
+                self.change_view_side()
+
+    def change_view_side(self):
+        self.right_corner = not self.right_corner
+        self.image = pygame.transform.flip(self.image, True, False)
 
     def collide_with(self, sprites):
         return pygame.sprite.spritecollide(self, sprites, False, collided=pygame.sprite.collide_mask)

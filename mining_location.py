@@ -33,7 +33,7 @@ class Tile(pygame.sprite.Sprite):
         self.rect = self.image.get_rect().move(size)
 
 
-def generate_mine(all_sprites, tiles_group):
+def generate_mine(all_sprites, tiles_group, chests_group):
     tile_map = []
     chest_number = [8, 10, 11]
     for y in range(5):
@@ -42,11 +42,13 @@ def generate_mine(all_sprites, tiles_group):
             size = x * TILE_SIZE - TILE_SIZE, (height * 2 // 3) + (y * TILE_SIZE)
             if x != 8 or y != 0:
                 if randint(0, 15) in chest_number and number_of_chests > 0 and y > 1:
-                    Chest(size, all_sprites, tiles_group)
+                    Chest(size, all_sprites, chests_group)
                     tile_map[y].append((-1, -1))
                 else:
                     Tile(size, y, all_sprites, tiles_group)
                     tile_map[y].append(size)
+            else:
+                tile_map[y].append(size)
     return tile_map
 
 
