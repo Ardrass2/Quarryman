@@ -27,6 +27,7 @@ def mine_update():
 
 
 def start_mine():
+    exit_dialog = None
     digger = Miner(all_sprites, load_image("texture/miner.png"), 10, 5, level_map)
     bg = pygame.transform.scale(load_image("texture/cave_mining.jpg"), (window.width, window.height))
     manager = pygame_gui.UIManager((window.width, window.height))
@@ -34,18 +35,29 @@ def start_mine():
     scores = 10
     score = pygame_gui.elements.UILabel(
         relative_rect=pygame.Rect((window.width * 0.45, window.height * 0.005),
-                                  (window.width * 0.9, window.height * 0.08)), text="score - " + str(scores) + ' ', manager=manager)
+                                  (window.width * 0.9, window.height * 0.08)), text="score - " + str(scores) + ' ',
+        manager=manager)
     screen.blit(bg, (0, 0))
     camera = Camera()
     while True:
         time_delta = clock.tick(FPS) / 1000.0
         for event in pygame.event.get():
+            manager.process_events(event)
             if event.type == pygame.QUIT:
-                terminate()
+                exit_dialog = pygame_gui.windows.UIConfirmationDialog(
+                    rect=pygame.Rect((250, 250), (300, 300)),
+                    manager=manager,
+                    window_title="Подтверждение",
+                    action_long_desc="Вы уверены, что хотите выйти?",
+                    action_short_name="Да",
+                    blocking=True)
+            if event.type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
+                if event.ui_element == exit_dialog:
+                    terminate()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     digger.kill()
-                    for elem in tiles_group:
+                    for elem in all_sprites:
                         elem.kill()
                     return upper_world_cycle()
                 digger.move(event.key)
@@ -67,6 +79,7 @@ def upper_world_cycle():
     digger = Digger(all_sprites, load_image("texture/miner.png"), 10, 5)
     bg = pygame.transform.scale(load_image("texture/sky.png"), (window.width, window.height * 2 // 3))
     press_e = None
+    exit_dialog = None
     manager = pygame_gui.UIManager((window.width, window.height))
     manager.get_theme().load_theme('game_theme.json')
 
@@ -82,8 +95,18 @@ def upper_world_cycle():
             press_e = None
             manager.clear_and_reset()
         for event in pygame.event.get():
+            manager.process_events(event)
             if event.type == pygame.QUIT:
-                terminate()
+                exit_dialog = pygame_gui.windows.UIConfirmationDialog(
+                    rect=pygame.Rect((250, 250), (300, 300)),
+                    manager=manager,
+                    window_title="Подтверждение",
+                    action_long_desc="Вы уверены, что хотите выйти?",
+                    action_short_name="Да",
+                    blocking=True)
+            if event.type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
+                if event.ui_element == exit_dialog:
+                    terminate()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_e and digger.check_collide(mine):
                     for elem in all_sprites:
@@ -117,6 +140,7 @@ def first_step():
         while start.next_window == "setting":
             setting_window = Settings_Window(clock, music)
             if setting_window.back == "back":
+                start.__init__(clock)
                 start.next_window = start.main_cycle(clock)
     if start.next_window == "game":
         upper_world_cycle()

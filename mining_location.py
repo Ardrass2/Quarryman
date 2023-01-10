@@ -2,7 +2,7 @@ from function import *
 from setting import *
 from random import randint
 
-TILE_SIZE = window.width * 0.1
+TILE_SIZE = window.width * 0.05
 number_of_chests = 5
 
 

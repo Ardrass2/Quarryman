@@ -5,6 +5,8 @@ from setting import *
 
 class Settings_Window:
     def __init__(self, clock, music):
+        self.back_dialog = None
+        self.confirm_dialog = None
         self.music = music
         self.screen = pygame.display.set_mode((window.width, window.height))
         self.sound_value = int(sound_volume * 100)
@@ -71,9 +73,26 @@ class Settings_Window:
             for event in pygame.event.get():
                 self.manager.process_events(event)
                 if event.type == pygame.QUIT:
-                    terminate()
+                    self.confirm_dialog = pygame_gui.windows.UIConfirmationDialog(
+                        rect=pygame.Rect((250, 250), (300, 300)),
+                        manager=self.manager,
+                        window_title="Подтверждение",
+                        action_long_desc="Вы уверены, что хотите выйти?",
+                        action_short_name="Да",
+                        blocking=True)
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
+                        self.back_dialog = pygame_gui.windows.UIConfirmationDialog(
+                            rect=pygame.Rect((250, 250), (300, 300)),
+                            manager=self.manager,
+                            window_title="Подтверждение",
+                            action_long_desc="Перейти в главное меню?",
+                            action_short_name="Да",
+                            blocking=True)
+                if event.type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
+                    if event.ui_element == self.confirm_dialog:
+                        terminate()
+                    if event.ui_element == self.back_dialog:
                         change_music_value(self.music_value)
                         change_sound_value(self.sound_value)
                         return "back"
