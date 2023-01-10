@@ -4,6 +4,8 @@ from random import randint
 
 TILE_SIZE = width * 0.1
 number_of_chests = 5
+tile_map = []
+chest_number = [8, 10, 11]
 
 
 class Chest(pygame.sprite.Sprite):
@@ -34,12 +36,12 @@ class Tile(pygame.sprite.Sprite):
 
 
 def generate_mine(all_sprites, tiles_group, chests_group):
-    tile_map = []
-    chest_number = [8, 10, 11]
+    global tile_map, chest_number, number_of_chests
+
     for y in range(5):
         tile_map.append([])
         for x in range(16):
-            size = x * TILE_SIZE - TILE_SIZE, (height * 2 // 3) + (y * TILE_SIZE)
+            size = x * TILE_SIZE - TILE_SIZE, (height // 5) + (y * TILE_SIZE)  # //5 для удобства
             if x != 8 or y != 0:
                 if randint(0, 15) in chest_number and number_of_chests > 0 and y > 1:
                     Chest(size, all_sprites, chests_group)
@@ -49,6 +51,28 @@ def generate_mine(all_sprites, tiles_group, chests_group):
                     tile_map[y].append(size)
             else:
                 tile_map[y].append(size)
+    return tile_map
+
+
+def infinity_mine(rows, all_sprites, tiles_group, chests_group):
+    global tile_map, chest_number, number_of_chests
+    rowz = rows
+    for y in range(2, 3):
+        tile_map.append([])
+        for x in range(16):
+            if rowz > 0:  # .                              // 5 для удобства
+                size = x * TILE_SIZE - TILE_SIZE, (height // 5) + ((rows + 2) * TILE_SIZE)  # после запятой надо фиксить
+                if x != 8 or y != 0:
+                    if randint(0, 15) in chest_number and number_of_chests > 0 and y > 999:  # 999,чтобы проще проверять
+                        Chest(size, all_sprites, chests_group)
+                        tile_map[y].append((-1, -1))
+                    else:
+                        Tile(size, y, all_sprites, tiles_group)
+                        tile_map[y].append(size)
+                else:
+                    tile_map[y].append(size)
+            else:
+                return None
     return tile_map
 
 

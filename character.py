@@ -171,6 +171,7 @@ class Miner(pygame.sprite.Sprite):
         elif key_down == pygame.K_LEFT:
             if self.right_corner:
                 self.change_view_side()
+        return self.cell_y
 
     def change_view_side(self):
         self.right_corner = not self.right_corner

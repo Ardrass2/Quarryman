@@ -48,7 +48,8 @@ def start_mine():
                     for elem in tiles_group:
                         elem.kill()
                     return upper_world_cycle()
-                digger.move(event.key)
+                rows = digger.move(event.key)
+                infinity_mine(rows, all_sprites, tiles_group, chests_group)
         screen.blit(bg, (0, 0))
         camera.update(digger)
         for sprite in all_sprites:
