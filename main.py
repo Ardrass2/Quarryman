@@ -1,10 +1,8 @@
 # Quarryman GAME
-
 import pygame.sprite
 import pygame_gui
 
 from camera import *
-from fire import *
 from character import *
 from first_location import *
 from mining_location import *
@@ -18,12 +16,8 @@ level_map = []
 
 
 def mine_update():
-    tiles_group.update()
-    tiles_group.draw(screen)
     all_sprites.update(tiles_group)
     all_sprites.draw(screen)
-    all_borders.update()
-    all_borders.draw(screen)
 
 
 def start_mine():
@@ -37,15 +31,21 @@ def start_mine():
         relative_rect=pygame.Rect((window.width * 0.45, window.height * 0.005),
                                   (window.width * 0.9, window.height * 0.08)), text="score - " + str(scores) + ' ',
         manager=manager)
+    n_lines = number_of_line + 1
     screen.blit(bg, (0, 0))
     camera = Camera()
+    tiles_group.update()
+    tiles_group.draw(screen)
+    all_borders.update()
+    all_borders.draw(screen)
     while True:
         time_delta = clock.tick(FPS) / 1000.0
         for event in pygame.event.get():
             manager.process_events(event)
             if event.type == pygame.QUIT:
                 exit_dialog = pygame_gui.windows.UIConfirmationDialog(
-                    rect=pygame.Rect((250, 250), (300, 300)),
+                    rect=pygame.Rect((window.width // 2, window.height // 2),
+                                     (300, 300)),
                     manager=manager,
                     window_title="Подтверждение",
                     action_long_desc="Вы уверены, что хотите выйти?",
@@ -60,9 +60,17 @@ def start_mine():
                     for elem in all_sprites:
                         elem.kill()
                     return upper_world_cycle()
-                digger.move(event.key)
+                if digger.move(event.key) == "under":
+                    digger.update_lines(new_line(all_sprites, tiles_group, chests_group, n_lines - 1,
+                                                 camera.all_diff_x, camera.all_diff_y))
+                    n_lines += 1
+                all_borders.update()
+                all_borders.draw(screen)
+                tiles_group.update()
+                tiles_group.draw(screen)
         screen.blit(bg, (0, 0))
         camera.update(digger)
+        camera.all_diff_update()
         for sprite in all_sprites:
             camera.apply(sprite)
         mine_update()
@@ -98,7 +106,8 @@ def upper_world_cycle():
             manager.process_events(event)
             if event.type == pygame.QUIT:
                 exit_dialog = pygame_gui.windows.UIConfirmationDialog(
-                    rect=pygame.Rect((250, 250), (300, 300)),
+                    rect=pygame.Rect((window.width // 2, window.height // 2),
+                                     (300, 300)),
                     manager=manager,
                     window_title="Подтверждение",
                     action_long_desc="Вы уверены, что хотите выйти?",

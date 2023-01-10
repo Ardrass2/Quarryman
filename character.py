@@ -47,15 +47,17 @@ class Miner(pygame.sprite.Sprite):
         self.cut_sheet(action)
         self.rect[0], self.rect[1] = own_rect[0], own_rect[1]
 
+    def update_lines(self, new_line):
+        self.level_map = [*self.level_map, new_line]
+
     def update(self, ground):
-        if self.time == 1:
+        if self.time == 3:
             if self.cur_frame == len(self.frames) - 1:
                 self.act = False
                 self.change_action("stay")
                 if self.key == "s":
                     self.key = ""
                     for elem in ground:
-                        print(elem.rect[1], self.rect[1] - 11 + window.width * 0.1)
                         if self.right_corner:
                             if elem.rect[0] == self.rect[0] + TILE_SIZE and elem.rect[1] == self.rect[1] - 11:
                                 elem.kill()
@@ -81,6 +83,9 @@ class Miner(pygame.sprite.Sprite):
                         self.rect = self.rect.move(TILE_SIZE, 0)
                         self.cell_x = self.cell_x + 1
                         while len(self.collide_with(ground)) == 0:
+                            for elem in ground:
+                                if elem.rect[1] == self.rect[1] - 11 - 5 * TILE_SIZE:
+                                    elem.kill()
                             self.rect = self.rect.move(0, TILE_SIZE)
                             self.cell_y = self.cell_y + 1
 
@@ -96,11 +101,14 @@ class Miner(pygame.sprite.Sprite):
                         self.rect = self.rect.move(-TILE_SIZE, 0)
                         self.cell_x = self.cell_x - 1
                         while len(self.collide_with(ground)) == 0:
+                            if self.cell_y > 5:
+                                for elem in ground:
+                                    if elem.rect[1] == self.rect[1] - 11 - 5 * TILE_SIZE:
+                                        elem.kill()
                             self.rect = self.rect.move(0, TILE_SIZE)
                             self.cell_y = self.cell_y + 1
 
                 pygame.mixer.music.stop()
-
             self.cur_frame = (self.cur_frame + 1) % len(self.frames)
             self.image = pygame.transform.scale(self.frames[self.cur_frame], (TILE_SIZE, TILE_SIZE - 10))
             if self.right_corner:
@@ -123,12 +131,14 @@ class Miner(pygame.sprite.Sprite):
                         self.level_map[self.cell_y + 1][self.cell_x + 1] = (0, 0)
                         self.level_map[self.cell_y][self.cell_x + 1] = (0, 0)
                         self.change_action("d_under_person")
+                        return "under"
                     if not self.right_corner and self.level_map[self.cell_y + 1][self.cell_x - 1] != (0, 0):
                         Sound("stone_destroy", 1)
                         self.cur_frame = 0
                         self.level_map[self.cell_y + 1][self.cell_x - 1] = (0, 0)
                         self.level_map[self.cell_y][self.cell_x - 1] = (0, 0)
                         self.change_action("d_under_person")
+                        return "under"
 
         elif key_down == pygame.K_d:
             if not self.act:

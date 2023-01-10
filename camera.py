@@ -7,6 +7,12 @@ class Camera:
     def __init__(self):
         self.dx = 0
         self.dy = 0
+        self.all_diff_x = 0
+        self.all_diff_y = 0
+
+    def all_diff_update(self):
+        self.all_diff_x += self.dx
+        self.all_diff_y += self.dy
 
     def apply(self, obj):
         obj.rect.x += self.dx
