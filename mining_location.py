@@ -1,9 +1,10 @@
-from function import *
-from setting import *
 from random import randint
+
+from setting import *
 
 TILE_SIZE = window.width * 0.1
 number_of_chests = 5
+number_of_line = 10
 
 
 class Chest(pygame.sprite.Sprite):
@@ -16,7 +17,7 @@ class Chest(pygame.sprite.Sprite):
 class Border(pygame.sprite.Sprite):
     def __init__(self, all_sprites, borders, y, left=False):
         super().__init__(borders, all_sprites)
-        self.image = pygame.transform.scale(load_image("texture/side_border.png"),  (TILE_SIZE * 5, TILE_SIZE))
+        self.image = pygame.transform.scale(load_image("texture/side_border.png"), (TILE_SIZE * 5, TILE_SIZE))
         if not left:
             self.rect = self.image.get_rect().move(-6 * TILE_SIZE, (window.height * 2 // 3) + (y * TILE_SIZE))
         else:
@@ -35,8 +36,8 @@ class Tile(pygame.sprite.Sprite):
 
 def generate_mine(all_sprites, tiles_group, chests_group):
     tile_map = []
-    chest_number = [8, 10, 11]
-    for y in range(5):
+    chest_number = [2]
+    for y in range(number_of_line):
         tile_map.append([])
         for x in range(16):
             size = x * TILE_SIZE - TILE_SIZE, (window.height * 2 // 3) + (y * TILE_SIZE)
@@ -50,6 +51,21 @@ def generate_mine(all_sprites, tiles_group, chests_group):
             else:
                 tile_map[y].append(size)
     return tile_map
+
+
+def new_line(all_sprites, tiles_group, chests_group, line_n, d_x, d_y):
+    line_coords = []
+    chest_number = [1, 2]
+    for x in range(16):
+        size = x * TILE_SIZE - TILE_SIZE + d_x, (window.height * 2 // 3) + (line_n * TILE_SIZE) + d_y
+        if randint(0, 15) in chest_number and number_of_chests > 0:
+            Chest(size, all_sprites, chests_group)
+            line_coords.append((-1, -1))
+        else:
+            Tile(size, line_n, all_sprites, tiles_group)
+            line_coords.append(size)
+    print(line_coords)
+    return line_coords
 
 
 def generate_borders(all_sprites, all_borders):

@@ -34,12 +34,30 @@ class Start_Window:
             for event in pygame.event.get():
                 self.manager.process_events(event)
                 if event.type == pygame.QUIT:
-                    terminate()
+                    self.confirm_dialog = pygame_gui.windows.UIConfirmationDialog(
+                        rect=pygame.Rect((250, 250), (300, 300)),
+                        manager=self.manager,
+                        window_title="Подтверждение",
+                        action_long_desc="Вы уверены, что хотите выйти?",
+                        action_short_name="Да",
+                        blocking=True)
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.confirm_dialog = pygame_gui.windows.UIConfirmationDialog(
+                            rect=pygame.Rect((250, 250), (300, 300)),
+                            manager=self.manager,
+                            window_title="Подтверждение",
+                            action_long_desc="Вы уверены, что хотите выйти?",
+                            action_short_name="Да",
+                            blocking=True)
                 if event.type == pygame_gui.UI_BUTTON_PRESSED:
                     if event.ui_element == self.start_button:
                         return "game"
                     if event.ui_element == self.setting_button:
                         return "setting"
+                if event.type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
+                    if event.ui_element == self.confirm_dialog:
+                        terminate()
             self.manager.update(time_delta=time_delta)
             self.window_surface.blit(self.background, (0, 0))
             self.manager.draw_ui(self.window_surface)
