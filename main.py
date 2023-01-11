@@ -82,6 +82,9 @@ def start_mine():
         all_sprites.draw(screen)
         manager.update(time_delta=time_delta)
         manager.draw_ui(screen)
+        screen.blit(heart, (5, 5))
+        screen.blit(heart_2, ((window.width * 0.04 + 6) * 1, 5))
+        screen.blit(heart_3, ((window.width * 0.04 + 5) * 2 - 2, 5))
         pygame.display.flip()
         clock.tick(FPS)
 
