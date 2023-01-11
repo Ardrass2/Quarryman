@@ -2,6 +2,7 @@ import os
 import sys
 
 import pygame
+import pygame_gui
 
 
 def terminate():
@@ -102,6 +103,14 @@ def change_sound_value(new_value):
     settings_out.close()
     os.remove("setting.txt")
     os.rename("sett.txt", "setting.txt")
+
+
+def update_label(scorez, manager):
+    score = pygame_gui.elements.UILabel(
+        relative_rect=pygame.Rect((window.width * 0.45, window.height * 0.005),
+                                  (window.width * 0.9, window.height * 0.08)),
+        text="score - " + str(scorez) + ' ', manager=manager)
+    return score
 
 
 def except_hook(cls, exception, traceback):
