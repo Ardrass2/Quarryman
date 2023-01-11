@@ -5,6 +5,9 @@ from music_player import Sound
 from setting import *
 
 
+scores = 0
+
+
 class Miner(pygame.sprite.Sprite):
     def __init__(self, all_sprites, sheet, columns, rows, level_map):
         super().__init__(all_sprites)
@@ -55,7 +58,7 @@ class Miner(pygame.sprite.Sprite):
                 if self.key == "s":
                     self.key = ""
                     for elem in ground:
-                        print(elem.rect[1], self.rect[1] - 11 + window.width * 0.1)
+                        #  print(elem.rect[1], self.rect[1] - 11 + window.width * 0.1)
                         if self.right_corner:
                             if elem.rect[0] == self.rect[0] + TILE_SIZE and elem.rect[1] == self.rect[1] - 11:
                                 elem.kill()
@@ -68,7 +71,6 @@ class Miner(pygame.sprite.Sprite):
                                 elem.kill()
                             if elem.rect[0] == self.rect[0] - TILE_SIZE and elem.rect[1] == self.rect[1] - 11:
                                 elem.kill()
-
                 if self.key == "d":
                     self.key = ""
                     no_blocks = True
@@ -111,7 +113,7 @@ class Miner(pygame.sprite.Sprite):
             self.time += 1
 
     def move(self, key_down):
-
+        global scores
         if key_down == pygame.K_s:
             if not self.act:
                 if self.cell_x + 1 != len(self.level_map[self.cell_y]) and self.cell_x - 1 >= 0:
@@ -123,12 +125,14 @@ class Miner(pygame.sprite.Sprite):
                         self.level_map[self.cell_y + 1][self.cell_x + 1] = (0, 0)
                         self.level_map[self.cell_y][self.cell_x + 1] = (0, 0)
                         self.change_action("d_under_person")
+                        scores += 2
                     if not self.right_corner and self.level_map[self.cell_y + 1][self.cell_x - 1] != (0, 0):
                         Sound("stone_destroy", 1)
                         self.cur_frame = 0
                         self.level_map[self.cell_y + 1][self.cell_x - 1] = (0, 0)
                         self.level_map[self.cell_y][self.cell_x - 1] = (0, 0)
                         self.change_action("d_under_person")
+                        scores += 2
 
         elif key_down == pygame.K_d:
             if not self.act:
@@ -141,6 +145,12 @@ class Miner(pygame.sprite.Sprite):
                         self.cur_frame = 0
                         self.level_map[self.cell_y][self.cell_x + 1] = (0, 0)
                         self.change_action("d_on_corner")
+                        scores += 1
+                    elif self.level_map[self.cell_y][self.cell_x + 1] == (-1, -1):
+                        self.change_action("run")
+                        self.cur_frame = 8
+                        Sound("steps", 1)
+                        scores += 5
                     else:
                         self.change_action("run")
                         self.cur_frame = 8
@@ -159,6 +169,12 @@ class Miner(pygame.sprite.Sprite):
                         self.cur_frame = 0
                         self.level_map[self.cell_y][self.cell_x - 1] = (0, 0)
                         self.change_action("d_on_corner")
+                        scores += 1
+                    elif self.level_map[self.cell_y][self.cell_x - 1] == (-1, -1):
+                        self.change_action("run")
+                        self.cur_frame = 8
+                        Sound("steps", 1)
+                        scores += 5
                     else:
                         self.change_action("run")
                         self.cur_frame = 8
@@ -171,6 +187,7 @@ class Miner(pygame.sprite.Sprite):
         elif key_down == pygame.K_LEFT:
             if self.right_corner:
                 self.change_view_side()
+        return scores
 
     def change_view_side(self):
         self.right_corner = not self.right_corner

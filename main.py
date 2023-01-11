@@ -17,6 +17,14 @@ from start_window import Start_Window
 level_map = []
 
 
+def update_label(scorez, manager):
+    score = pygame_gui.elements.UILabel(
+        relative_rect=pygame.Rect((window.width * 0.45, window.height * 0.005),
+                                  (window.width * 0.9, window.height * 0.08)),
+        text="score - " + str(scorez) + ' ', manager=manager)
+    return score
+
+
 def mine_update():
     tiles_group.update()
     tiles_group.draw(screen)
@@ -29,13 +37,19 @@ def mine_update():
 def start_mine():
     digger = Miner(all_sprites, load_image("texture/miner.png"), 10, 5, level_map)
     bg = pygame.transform.scale(load_image("texture/cave_mining.jpg"), (window.width, window.height))
+    heart = pygame.transform.scale(load_image("texture/heart.png"), (window.width * 0.04, window.height * 0.066))
+    heart_2 = pygame.transform.scale(load_image("texture/heart.png"), (window.width * 0.04, window.height * 0.066))
+    heart_3 = pygame.transform.scale(load_image("texture/heart.png"), (window.width * 0.04, window.height * 0.066))
     manager = pygame_gui.UIManager((window.width, window.height))
     manager.get_theme().load_theme('theme.json')
-    scores = 10
     score = pygame_gui.elements.UILabel(
         relative_rect=pygame.Rect((window.width * 0.45, window.height * 0.005),
-                                  (window.width * 0.9, window.height * 0.08)), text="score - " + str(scores) + ' ', manager=manager)
+                                  (window.width * 0.9, window.height * 0.08)),
+        text="score - " + str(scores) + ' ', manager=manager)
     screen.blit(bg, (0, 0))
+    screen.blit(heart, (5, 5))
+    screen.blit(heart_2, ((window.width * 0.04 + 6) * 1, 5))
+    screen.blit(heart_3, ((window.width * 0.04 + 5) * 2 - 2, 5))
     camera = Camera()
     while True:
         time_delta = clock.tick(FPS) / 1000.0
@@ -48,14 +62,22 @@ def start_mine():
                     for elem in tiles_group:
                         elem.kill()
                     return upper_world_cycle()
-                digger.move(event.key)
+                scorez = digger.move(event.key)
+                score.kill()
+                score = update_label(scorez, manager)
         screen.blit(bg, (0, 0))
         camera.update(digger)
         for sprite in all_sprites:
             camera.apply(sprite)
         mine_update()
+        for elem in all_sprites:
+            if elem.rect[0] == digger.rect[0] and elem.rect[1] == digger.rect[1] - 11:
+                elem.kill()
         manager.update(time_delta=time_delta)
         manager.draw_ui(screen)
+        screen.blit(heart, (5, 5))
+        screen.blit(heart_2, ((window.width * 0.04 + 6) * 1, 5))
+        screen.blit(heart_3, ((window.width * 0.04 + 5) * 2 - 2, 5))
         pygame.display.flip()
         clock.tick(FPS)
 
