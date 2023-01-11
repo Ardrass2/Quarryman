@@ -16,11 +16,6 @@ from start_window import Start_Window
 level_map = []
 
 
-def mine_update():
-    all_sprites.update(tiles_group)
-    all_sprites.draw(screen)
-
-
 def start_mine():
     exit_dialog = None
     digger = Miner(all_sprites, load_image("texture/miner.png"), 10, 5, level_map)
@@ -33,7 +28,7 @@ def start_mine():
     scores = 10
     score = pygame_gui.elements.UILabel(
         relative_rect=pygame.Rect((window.width * 0.45, window.height * 0.005),
-                                  (window.width * 0.9, window.height * 0.08)), text="score - " + str(scores) + ' ',
+                                  (window.width * 0.9, window.height * 0.08)), text=f"СЧЕТ - {str(scores)} ",
         manager=manager)
     n_lines = number_of_line + 1
     screen.blit(bg, (0, 0))
@@ -71,7 +66,7 @@ def start_mine():
                     digger.update_lines(new_line(all_sprites, tiles_group, chests_group, n_lines - 1,
                                                  camera.all_diff_x, camera.all_diff_y))
                     generate_borders(all_sprites, all_borders, n_lines - 1, camera.all_diff_x, camera.all_diff_y)
-                    n_lines += 1
+                    n_lines += 2
                 all_borders.update()
                 all_borders.draw(screen)
                 tiles_group.update()
@@ -81,7 +76,10 @@ def start_mine():
         camera.all_diff_update()
         for sprite in all_sprites:
             camera.apply(sprite)
-        mine_update()
+        fire_group.update(digger, tiles_group, chests_group, digger.rect[0], digger.rect[1])
+        scores += digger.update(tiles_group, chests_group, fire_group, all_sprites)
+        score.set_text(f"СЧЕТ - {str(scores)} ")
+        all_sprites.draw(screen)
         manager.update(time_delta=time_delta)
         manager.draw_ui(screen)
         pygame.display.flip()
@@ -168,6 +166,7 @@ if __name__ == '__main__':
     pygame.display.set_caption('Копатель')
     size = window.width, window.height
     music = Music()
+    fire_group = pygame.sprite.Group()
     chests_group = pygame.sprite.Group()
     all_sprites = pygame.sprite.Group()
     all_borders = pygame.sprite.Group()

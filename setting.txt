@@ -1,5 +1,5 @@
-width=1440
-height=900
-music_value=1
-sound_value=5
+width=1280
+height=720
+music_value=0
+sound_value=0
 

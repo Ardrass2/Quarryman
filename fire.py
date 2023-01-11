@@ -1,48 +1,61 @@
-import pygame
+import pygame.sprite
 
-from setting import *
-from function import *
 from mining_location import TILE_SIZE
+from setting import *
 
 
-class Fire:
-    def __init__(self, all_sprites, spawn_chance):
-        super().__init__(all_sprites)
-        self.fire_dx = 0
-        self.fire_dy = 0
-        if not spawn_chance == 5:
-            pass
-        else:
-            self.image = pygame.transform.scale(load_image("texture/fire.jpg"), (TILE_SIZE, TILE_SIZE))
-            # тут нужно сделать так, чтобы он встал на место сломанного блока,    (self.rect)
-            # по идеи блок выдает цифру когда ломается и свои координаты, если 5, то огонь появляется на месте блока.
+class Fire(pygame.sprite.Sprite):
+    def __init__(self, all_sprites, fire_sprites, left, top):
+        super().__init__(fire_sprites, all_sprites)
+        self.image = pygame.transform.scale(load_image("texture/fire.png"), (TILE_SIZE, TILE_SIZE))
+        self.rect = self.image.get_rect()
+        self.rect.top = top
+        self.time = 0
+        self.rect.left = left
+        self.left = True
 
-    def update_fire(self, miner, block, miner_x, miner_y, fire_x, fire_y):
-        if miner_x == fire_x and miner_y == fire_y:  # если огонь в майнере
-            for elem in self.collide_with(miner):
+    def update(self, miner, ground, chests, miner_x, miner_y):
+        if self.rect.top > window.height:
+            self.kill()
+        if miner_x == self.rect[0] and miner_y - 11 == self.rect[1]:
+            miner.kill()
+        if pygame.sprite.spritecollide(self, chests, pygame.sprite.collide_mask):
+            for elem in pygame.sprite.spritecollide(self, chests, pygame.sprite.collide_mask):
                 elem.kill()
-        elif miner_y < fire_y:  # и снизу не пустота.    (если майнер ниже)
-            if miner_x < fire_x:
-                self.fire_dx = -50
-            elif miner_x > fire_x:
-                self.fire_dx = 50
-            else:
-                self.fire_dx = 0
-        elif miner_y == fire_y:  # если на одном уровне
-            if miner_x < fire_x:
-                self.fire_dx = -50
-            else:
-                self.fire_dx = 50
-        elif miner_y > fire_y:  # если майнер выше
-            if miner_x > fire_x:
-                self.fire_dx = 50
-            elif miner_x < fire_x:
-                self.fire_dx = -50
-            else:
-                self.fire_dx = 0
+        if self.time == 50:
+            collided = self.collide_with_ground(ground)
+            if not collided:
+                self.rect = self.rect.move(0, TILE_SIZE)
+            if miner_x > self.rect[0] and collided and not self.collide_with_left_walls(ground):
+                if self.left:
+                    self.left = False
+                    self.image = pygame.transform.flip(self.image, True, False)
+                self.rect = self.rect.move(TILE_SIZE, 0)
+            if miner_x < self.rect[0] and collided and not self.collide_with_right_walls(ground):
+                if not self.left:
+                    self.left = True
+                    self.image = pygame.transform.flip(self.image, True, False)
+                self.rect = self.rect.move(-TILE_SIZE, 0)
+            self.time = 0
         else:
-            self.fire_dx = 0
-        #  self.rect.move(self.fire_dx, self.fire_dy) обновляем местоположение огня.
+            self.time += 1
 
-    def collide_with(self, sprites):
-        return pygame.sprite.spritecollide(self, sprites, False, collided=pygame.sprite.collide_mask)
+    def collide_with_ground(self, ground):
+        flag = False
+        for elem in ground:
+            if self.rect[0] == elem.rect[0] and self.rect[1] == elem.rect[1] - TILE_SIZE:
+                flag = True
+        return flag
+
+    def collide_with_right_walls(self, ground):
+        for elem in ground:
+            if self.rect[0] == elem.rect[0] + TILE_SIZE and self.rect[1] == elem.rect[1]:
+                return True
+        return False
+
+    def collide_with_left_walls(self, ground):
+        for elem in ground:
+            if self.rect[0] == elem.rect[0] - TILE_SIZE and self.rect[1] == elem.rect[1]:
+                print(True)
+                return True
+        return False
