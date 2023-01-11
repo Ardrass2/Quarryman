@@ -22,7 +22,16 @@ class Music:
 
 class Sound:
     def __init__(self, sound, repeat_time=-1):
+        self.repeat_time = repeat_time
         self.value = sound_volume
-        pygame.mixer.music.load(f"data/music/{sound}.wav")
-        pygame.mixer.music.play(repeat_time)
-        pygame.mixer.music.set_volume(self.value)
+        self.sound = pygame.mixer.Sound(f"data/music/{sound}.wav")
+        self.sound.set_volume(self.value)
+
+    def change_repeat_time(self, repeat_time):
+        self.repeat_time = repeat_time
+
+    def start(self):
+        self.sound.play(self.repeat_time)
+
+    def stop(self):
+        self.sound.stop()

@@ -15,13 +15,13 @@ class Chest(pygame.sprite.Sprite):
 
 
 class Border(pygame.sprite.Sprite):
-    def __init__(self, all_sprites, borders, y, left=False):
+    def __init__(self, all_sprites, borders, y, left, dx, dy):
         super().__init__(borders, all_sprites)
         self.image = pygame.transform.scale(load_image("texture/side_border.png"), (TILE_SIZE * 5, TILE_SIZE))
         if not left:
-            self.rect = self.image.get_rect().move(-6 * TILE_SIZE, (window.height * 2 // 3) + (y * TILE_SIZE))
+            self.rect = self.image.get_rect().move(-6 * TILE_SIZE + dx, (window.height * 2 // 3) + (y * TILE_SIZE) + dy)
         else:
-            self.rect = self.image.get_rect().move(15 * TILE_SIZE, (window.height * 2 // 3) + (y * TILE_SIZE))
+            self.rect = self.image.get_rect().move(15 * TILE_SIZE + dx, (window.height * 2 // 3) + (y * TILE_SIZE) + dy)
 
 
 class Tile(pygame.sprite.Sprite):
@@ -36,13 +36,13 @@ class Tile(pygame.sprite.Sprite):
 
 def generate_mine(all_sprites, tiles_group, chests_group):
     tile_map = []
-    chest_number = [2]
+    chest_number = [2, 7]
     for y in range(number_of_line):
         tile_map.append([])
         for x in range(16):
             size = x * TILE_SIZE - TILE_SIZE, (window.height * 2 // 3) + (y * TILE_SIZE)
             if x != 8 or y != 0:
-                if randint(0, 15) in chest_number and number_of_chests > 0 and y > 1:
+                if randint(0, 30) in chest_number and number_of_chests > 0 and y > 1:
                     Chest(size, all_sprites, chests_group)
                     tile_map[y].append((-1, -1))
                 else:
@@ -68,7 +68,11 @@ def new_line(all_sprites, tiles_group, chests_group, line_n, d_x, d_y):
     return line_coords
 
 
-def generate_borders(all_sprites, all_borders):
-    for y in range(5):
-        Border(all_sprites, all_borders, y)
-        Border(all_sprites, all_borders, y, True)
+def generate_borders(all_sprites, all_borders, dx=0, dy=0, line_n=0):
+    if len(all_borders) == 0:
+        for y in range(number_of_line):
+            Border(all_sprites, all_borders, y, False, dx, dy)
+            Border(all_sprites, all_borders, y, True, dx, dy)
+    else:
+        Border(all_sprites, all_borders, line_n, True, dx, dy)
+        Border(all_sprites, all_borders, line_n, False, dx, dy)

@@ -1,5 +1,4 @@
 # Quarryman GAME
-
 import pygame.sprite
 import pygame_gui
 
@@ -17,24 +16,13 @@ from start_window import Start_Window
 level_map = []
 
 
-def update_label(scorez, manager):
-    score = pygame_gui.elements.UILabel(
-        relative_rect=pygame.Rect((window.width * 0.45, window.height * 0.005),
-                                  (window.width * 0.9, window.height * 0.08)),
-        text="score - " + str(scorez) + ' ', manager=manager)
-    return score
-
-
 def mine_update():
-    tiles_group.update()
-    tiles_group.draw(screen)
     all_sprites.update(tiles_group)
     all_sprites.draw(screen)
-    all_borders.update()
-    all_borders.draw(screen)
 
 
 def start_mine():
+    exit_dialog = None
     digger = Miner(all_sprites, load_image("texture/miner.png"), 10, 5, level_map)
     bg = pygame.transform.scale(load_image("texture/cave_mining.jpg"), (window.width, window.height))
     heart = pygame.transform.scale(load_image("texture/heart.png"), (window.width * 0.04, window.height * 0.066))
@@ -42,42 +30,60 @@ def start_mine():
     heart_3 = pygame.transform.scale(load_image("texture/heart.png"), (window.width * 0.04, window.height * 0.066))
     manager = pygame_gui.UIManager((window.width, window.height))
     manager.get_theme().load_theme('theme.json')
+    scores = 10
     score = pygame_gui.elements.UILabel(
         relative_rect=pygame.Rect((window.width * 0.45, window.height * 0.005),
-                                  (window.width * 0.9, window.height * 0.08)),
-        text="score - " + str(scores) + ' ', manager=manager)
+                                  (window.width * 0.9, window.height * 0.08)), text="score - " + str(scores) + ' ',
+        manager=manager)
+    n_lines = number_of_line + 1
     screen.blit(bg, (0, 0))
     screen.blit(heart, (5, 5))
     screen.blit(heart_2, ((window.width * 0.04 + 6) * 1, 5))
     screen.blit(heart_3, ((window.width * 0.04 + 5) * 2 - 2, 5))
     camera = Camera()
+    tiles_group.update()
+    tiles_group.draw(screen)
+    all_borders.update()
+    all_borders.draw(screen)
     while True:
         time_delta = clock.tick(FPS) / 1000.0
         for event in pygame.event.get():
+            manager.process_events(event)
             if event.type == pygame.QUIT:
-                terminate()
+                exit_dialog = pygame_gui.windows.UIConfirmationDialog(
+                    rect=pygame.Rect((window.width // 2, window.height // 2),
+                                     (300, 300)),
+                    manager=manager,
+                    window_title="Подтверждение",
+                    action_long_desc="Вы уверены, что хотите выйти?",
+                    action_short_name="Да",
+                    blocking=True)
+            if event.type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
+                if event.ui_element == exit_dialog:
+                    terminate()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     digger.kill()
-                    for elem in tiles_group:
+                    for elem in all_sprites:
                         elem.kill()
                     return upper_world_cycle()
-                scorez = digger.move(event.key)
-                score.kill()
-                score = update_label(scorez, manager)
+                if digger.move(event.key) == "under":
+                    digger.update_lines(new_line(all_sprites, tiles_group, chests_group, n_lines - 1,
+                                                 camera.all_diff_x, camera.all_diff_y))
+                    generate_borders(all_sprites, all_borders, n_lines - 1, camera.all_diff_x, camera.all_diff_y)
+                    n_lines += 1
+                all_borders.update()
+                all_borders.draw(screen)
+                tiles_group.update()
+                tiles_group.draw(screen)
         screen.blit(bg, (0, 0))
         camera.update(digger)
+        camera.all_diff_update()
         for sprite in all_sprites:
             camera.apply(sprite)
         mine_update()
-        for elem in all_sprites:
-            if elem.rect[0] == digger.rect[0] and elem.rect[1] == digger.rect[1] - 11:
-                elem.kill()
         manager.update(time_delta=time_delta)
         manager.draw_ui(screen)
-        screen.blit(heart, (5, 5))
-        screen.blit(heart_2, ((window.width * 0.04 + 6) * 1, 5))
-        screen.blit(heart_3, ((window.width * 0.04 + 5) * 2 - 2, 5))
         pygame.display.flip()
         clock.tick(FPS)
 
@@ -89,6 +95,7 @@ def upper_world_cycle():
     digger = Digger(all_sprites, load_image("texture/miner.png"), 10, 5)
     bg = pygame.transform.scale(load_image("texture/sky.png"), (window.width, window.height * 2 // 3))
     press_e = None
+    exit_dialog = None
     manager = pygame_gui.UIManager((window.width, window.height))
     manager.get_theme().load_theme('game_theme.json')
 
@@ -104,8 +111,19 @@ def upper_world_cycle():
             press_e = None
             manager.clear_and_reset()
         for event in pygame.event.get():
+            manager.process_events(event)
             if event.type == pygame.QUIT:
-                terminate()
+                exit_dialog = pygame_gui.windows.UIConfirmationDialog(
+                    rect=pygame.Rect((window.width // 2, window.height // 2),
+                                     (300, 300)),
+                    manager=manager,
+                    window_title="Подтверждение",
+                    action_long_desc="Вы уверены, что хотите выйти?",
+                    action_short_name="Да",
+                    blocking=True)
+            if event.type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
+                if event.ui_element == exit_dialog:
+                    terminate()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_e and digger.check_collide(mine):
                     for elem in all_sprites:
@@ -139,6 +157,7 @@ def first_step():
         while start.next_window == "setting":
             setting_window = Settings_Window(clock, music)
             if setting_window.back == "back":
+                start.__init__(clock)
                 start.next_window = start.main_cycle(clock)
     if start.next_window == "game":
         upper_world_cycle()
