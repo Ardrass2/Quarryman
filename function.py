@@ -1,9 +1,9 @@
-import os
-import sys
-
-from setting import *
 import pygame
 import pygame_gui
+
+import os
+import sys
+from setting import *
 
 
 def terminate():
@@ -114,6 +114,7 @@ def dead(score, manager, wind_w, wind_h):
                                              relative_rect=pygame.Rect(wind_w // 2 - 100, wind_h - 200,
                                                                        wind_w // 4, 200))
     return ok_button
+
 
 def except_hook(cls, exception, traceback):
     # Отлов ошибок

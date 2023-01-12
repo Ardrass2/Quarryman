@@ -90,9 +90,16 @@ def start_mine():
         all_sprites.draw(screen)
         manager.update(time_delta=time_delta)
         manager.draw_ui(screen)
-        screen.blit(heart, (5, 5))
-        screen.blit(heart_2, ((window.width * 0.04 + 6) * 1, 5))
-        screen.blit(heart_3, ((window.width * 0.04 + 5) * 2 - 2, 5))
+        for i in range(1, digger.health + 1):
+            if i == 1:
+                screen.blit(heart, (5, 5))
+            if i == 2:
+                screen.blit(heart_2, ((window.width * 0.04 + 6) * 1, 5))
+            if i == 3:
+                screen.blit(heart_3, ((window.width * 0.04 + 5) * 2 - 2, 5))
+        if digger.is_miner_dead() and ok_but is None:
+            ok_but = dead(scores, manager, window.width, window.height)
+            digger.kill()
         pygame.display.flip()
         clock.tick(FPS)
 
@@ -139,7 +146,7 @@ def upper_world_cycle():
                         elem.kill()
                     manager.clear_and_reset()
                     global level_map
-                    level_map = generate_mine(all_sprites, tiles_group, chests_group)
+                    level_map = generate_mine(all_sprites, tiles_group, chests_group, 2)
                     # for elem in level_map:
                     #     print(len(elem))
                     generate_borders(all_sprites, all_borders)
