@@ -35,6 +35,7 @@ class Miner(pygame.sprite.Sprite):
         self.right_corner = False
         self.key = str()
         self.d_score = 0
+        self.health = 3
         self.act = False
 
     def cut_sheet(self, action):
@@ -154,6 +155,12 @@ class Miner(pygame.sprite.Sprite):
             return self.d_score
         else:
             self.time += 1
+            return 0
+
+    def is_miner_dead(self):
+        if self.health == 0:
+            return 1
+        else:
             return 0
 
     def get_chest(self, chests):

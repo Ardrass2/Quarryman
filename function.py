@@ -1,6 +1,7 @@
 import os
 import sys
 
+from setting import *
 import pygame
 import pygame_gui
 
@@ -105,13 +106,14 @@ def change_sound_value(new_value):
     os.rename("sett.txt", "setting.txt")
 
 
-def update_label(scorez, manager):
-    score = pygame_gui.elements.UILabel(
-        relative_rect=pygame.Rect((window.width * 0.45, window.height * 0.005),
-                                  (window.width * 0.9, window.height * 0.08)),
-        text="score - " + str(scorez) + ' ', manager=manager)
-    return score
-
+def dead(score, manager, wind_w, wind_h):
+    label = pygame_gui.elements.UILabel(text=f"ВЫ ПОГИБЛИ И ПОТЕРЯЛИ {score}$", manager=manager,
+                                        relative_rect=pygame.Rect(wind_w // 4, wind_h / 2 - 100,
+                                                                  wind_w * 2 // 3, 200))
+    ok_button = pygame_gui.elements.UIButton(text="Вернуться", manager=manager,
+                                             relative_rect=pygame.Rect(wind_w // 2 - 100, wind_h - 200,
+                                                                       wind_w // 4, 200))
+    return ok_button
 
 def except_hook(cls, exception, traceback):
     # Отлов ошибок

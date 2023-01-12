@@ -15,10 +15,11 @@ class Fire(pygame.sprite.Sprite):
         self.left = True
 
     def update(self, miner, ground, chests, miner_x, miner_y):
-        if self.rect.top > window.height:
+        if self.rect.top < 0:
             self.kill()
         if miner_x == self.rect[0] and miner_y - 11 == self.rect[1]:
-            miner.kill()
+            miner.health -= 1
+            self.kill()
         if pygame.sprite.spritecollide(self, chests, pygame.sprite.collide_mask):
             for elem in pygame.sprite.spritecollide(self, chests, pygame.sprite.collide_mask):
                 elem.kill()

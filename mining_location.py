@@ -1,6 +1,7 @@
 from random import randint
 
 from setting import *
+import pygame
 
 TILE_SIZE = window.width * 0.1
 number_of_chests = 5
