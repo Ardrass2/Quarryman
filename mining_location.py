@@ -25,16 +25,24 @@ class Border(pygame.sprite.Sprite):
 
 
 class Tile(pygame.sprite.Sprite):
-    def __init__(self, size, y, all_sprites, tiles_group):
+    def __init__(self, size, y, all_sprites, tiles_group, mine_spritez):
         super().__init__(tiles_group, all_sprites)
-        if y < 1:
-            self.image = pygame.transform.scale(load_image("texture/grass.png"), (TILE_SIZE, TILE_SIZE))
-        else:
-            self.image = pygame.transform.scale(load_image("texture/dirt.png"), (TILE_SIZE, TILE_SIZE))
-        self.rect = self.image.get_rect().move(size)
+        print(mine_spritez)
+        if mine_spritez == 0:
+            if y < 1:
+                self.image = pygame.transform.scale(load_image("texture/grass.png"), (TILE_SIZE, TILE_SIZE))
+            else:
+                self.image = pygame.transform.scale(load_image("texture/dirt.png"), (TILE_SIZE, TILE_SIZE))
+            self.rect = self.image.get_rect().move(size)
+        elif mine_spritez == 1:
+            self.image = pygame.transform.scale(load_image("texture/rock.png"), (TILE_SIZE, TILE_SIZE))
+            self.rect = self.image.get_rect().move(size)
+        elif mine_spritez == 2:
+            self.image = pygame.transform.scale(load_image("texture/rock_2.jpg"), (TILE_SIZE, TILE_SIZE))
+            self.rect = self.image.get_rect().move(size)
 
 
-def generate_mine(all_sprites, tiles_group, chests_group):
+def generate_mine(all_sprites, tiles_group, chests_group, mine_sprites):
     tile_map = []
     chest_number = [2]
     for y in range(number_of_line):
@@ -46,7 +54,7 @@ def generate_mine(all_sprites, tiles_group, chests_group):
                     Chest(size, all_sprites, chests_group)
                     tile_map[y].append((-1, -1))
                 else:
-                    Tile(size, y, all_sprites, tiles_group)
+                    Tile(size, y, all_sprites, tiles_group, mine_sprites)
                     tile_map[y].append(size)
             else:
                 tile_map[y].append(size)
@@ -62,7 +70,7 @@ def new_line(all_sprites, tiles_group, chests_group, line_n, d_x, d_y):
             Chest(size, all_sprites, chests_group)
             line_coords.append((-1, -1))
         else:
-            Tile(size, line_n, all_sprites, tiles_group)
+            Tile(size, line_n, all_sprites, tiles_group, mine_spritez=1)
             line_coords.append(size)
     print(line_coords)
     return line_coords

@@ -10,12 +10,13 @@ from first_location import *
 from mining_location import *
 from music_player import *
 from setting import *
+from shop import *
 from settings_window import Settings_Window
-from shop import Inside_Shop
+
 from start_window import Start_Window
 
 level_map = []
-
+mine_spritez = 0
 
 def update_label(scorez, manager):
     score = pygame_gui.elements.UILabel(
@@ -42,10 +43,11 @@ def start_mine():
     heart_3 = pygame.transform.scale(load_image("texture/heart.png"), (window.width * 0.04, window.height * 0.066))
     manager = pygame_gui.UIManager((window.width, window.height))
     manager.get_theme().load_theme('theme.json')
+    scorez = 0
     score = pygame_gui.elements.UILabel(
         relative_rect=pygame.Rect((window.width * 0.45, window.height * 0.005),
                                   (window.width * 0.9, window.height * 0.08)),
-        text="score - " + str(scores) + ' ', manager=manager)
+        text="score - " + str(0) + ' ', manager=manager)
     screen.blit(bg, (0, 0))
     screen.blit(heart, (5, 5))
     screen.blit(heart_2, ((window.width * 0.04 + 6) * 1, 5))
@@ -62,7 +64,8 @@ def start_mine():
                     for elem in tiles_group:
                         elem.kill()
                     return upper_world_cycle()
-                scorez = digger.move(event.key)
+                digger.move(event.key)
+                scorez += 1
                 score.kill()
                 score = update_label(scorez, manager)
         screen.blit(bg, (0, 0))
@@ -83,6 +86,7 @@ def start_mine():
 
 
 def upper_world_cycle():
+    global mine_spritez
     grass = Grass(all_sprites)
     mine = Mine(all_sprites)
     shop = Shop(all_sprites)
@@ -112,13 +116,14 @@ def upper_world_cycle():
                         elem.kill()
                     manager.clear_and_reset()
                     global level_map
-                    level_map = generate_mine(all_sprites, tiles_group, chests_group)
+                    level_map = generate_mine(all_sprites, tiles_group, chests_group, mine_spritez)
                     # for elem in level_map:
                     #     print(len(elem))
                     generate_borders(all_sprites, all_borders)
                     start_mine()
                 if event.key == pygame.K_e and digger.check_collide(shop):
-                    Inside_Shop(clock)
+                    mine_spritez = Inside_Shop(clock).cycle(clock)
+                    print(mine_spritez)
                 flag = True
                 digger.update(event.key, flag)
             if event.type == pygame.KEYUP:
