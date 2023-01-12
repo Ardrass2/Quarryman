@@ -36,14 +36,14 @@ class Mines:
                 (window.width * 0.25, window.height * 0.1)),
             text="Купить", manager=self.manager)
 
-        self.mine_1 = pygame.transform.scale(load_image("texture/cave_1.png"),
-                                             (window.width * 0.25, window.height * 0.25))
+        self.mine_1 = pygame.transform.scale(load_image("texture/dirt1.png"),
+                                             (window.width * 0.15, window.width * 0.15))
 
-        self.mine_2 = pygame.transform.scale(load_image("texture/mine.png"),
-                                             (window.width * 0.25, window.height * 0.25))
+        self.mine_2 = pygame.transform.scale(load_image("texture/rock.png"),
+                                             (window.width * 0.15, window.width * 0.15))
 
-        self.mine_3 = pygame.transform.scale(load_image("texture/mine_2.png"),
-                                             (window.width * 0.25, window.height * 0.25))
+        self.mine_3 = pygame.transform.scale(load_image("texture/rock_2.jpg"),
+                                             (window.width * 0.15, window.width * 0.15))
 
         size = window.width, window.height
         self.screen = pygame.display.set_mode(size)
@@ -65,17 +65,13 @@ class Mines:
                         blocking=True)
                 if event.type == pygame_gui.UI_BUTTON_PRESSED:
                     if event.ui_element == self.buy_button_1:
-                        self.buy_button_1.kill()
-                        mine_sprites = 0
-                        print(mine_sprites)
+                        self.buy_button_1.disable()
                     if event.ui_element == self.buy_button_2:
-                        self.buy_button_2.kill()
+                        self.buy_button_2.disable()
                         mine_sprites = 1
-                        print(mine_sprites)
                     if event.ui_element == self.buy_button_3:
-                        self.buy_button_3.kill()
+                        self.buy_button_3.disable()
                         mine_sprites = 2
-                        print(mine_sprites)
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         self.confirm_dialog = pygame_gui.windows.UIConfirmationDialog(
@@ -92,13 +88,12 @@ class Mines:
                     if event.ui_element == self.confirm_dialog:
                         return mine_sprites
             time_delta = clock.tick(FPS) / 1000.0
-
-            self.manager.update(time_delta=time_delta)
             self.window_surface.blit(self.bg, (0, 0))
-            self.manager.draw_ui(self.window_surface)
             self.screen.blit(self.mine_1, (window.width // 11, window.height // 3))
             self.screen.blit(self.mine_2, (window.width // 2.68, window.height // 3))
             self.screen.blit(self.mine_3, (window.width // 1.53, window.height // 3))
+            self.manager.update(time_delta=time_delta)
+            self.manager.draw_ui(self.window_surface)
             pygame.display.update()
             pygame.display.flip()
 

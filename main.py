@@ -18,6 +18,7 @@ level_map = []
 
 def start_mine():
     exit_dialog = None
+    confirm_dialog = None
     ok_but = None
     digger = Miner(all_sprites, load_image("texture/miner.png"), 10, 5, level_map)
     bg = pygame.transform.scale(load_image("texture/cave_mining.jpg"), (window.width, window.height))
@@ -55,7 +56,6 @@ def start_mine():
                     action_short_name="Да",
                     blocking=True)
             if ok_but is not None:
-                print(1)
                 if event.type == pygame_gui.UI_BUTTON_PRESSED:
                     if event.ui_element == ok_but:
                         for elem in all_sprites:
@@ -64,12 +64,21 @@ def start_mine():
             if event.type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
                 if event.ui_element == exit_dialog:
                     terminate()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
+                if event.ui_element == confirm_dialog:
                     digger.kill()
                     for elem in all_sprites:
                         elem.kill()
                     return upper_world_cycle()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    confirm_dialog = pygame_gui.windows.UIConfirmationDialog(
+                        rect=pygame.Rect((window.width // 2, window.height // 2),
+                                         (300, 300)),
+                        manager=manager,
+                        window_title="Предупреждение",
+                        action_long_desc="Если вы выйдите весь ваш прогресс будет утерен.",
+                        action_short_name="Ок",
+                        blocking=True)
                 if digger.move(event.key) == "under":
                     digger.update_lines(new_line(all_sprites, tiles_group, chests_group, n_lines - 1,
                                                  camera.all_diff_x, camera.all_diff_y))
