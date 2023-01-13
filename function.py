@@ -1,9 +1,31 @@
 import pygame
 import pygame_gui
 
+import sqlite3
 import os
 import sys
 from setting import *
+
+con = sqlite3.connect("data/Game_data")
+cur = con.cursor()
+
+
+def get_health():
+    result = cur.execute("""SELECT miner_health FROM Miner
+                         WHERE buys_id = (SELECT MAX(buys_id) FROM Miner)""").fetchall()
+    return result[0][0]
+
+
+def get_digger_speed():
+    result = cur.execute("""SELECT dig_speed FROM Miner
+                         WHERE buys_id = (SELECT MAX(buys_id) FROM Miner)""").fetchall()
+    return result[0][0]
+
+
+def get_digger_luck():
+    result = cur.execute("""SELECT dig_luck FROM Miner
+                         WHERE buys_id = (SELECT MAX(buys_id) FROM Miner)""").fetchall()
+    return result[0][0]
 
 
 def terminate():

@@ -34,9 +34,11 @@ class Miner(pygame.sprite.Sprite):
         self.cell_x, self.cell_y = len(level_map[0]) // 2, 0
         self.right_corner = False
         self.key = str()
+        self.chance = get_digger_luck()
         self.d_score = 0
-        self.health = 3
+        self.health = get_health()
         self.act = False
+        self.dig_speed = get_digger_speed()
 
     def cut_sheet(self, action):
         self.frames = []
@@ -61,7 +63,7 @@ class Miner(pygame.sprite.Sprite):
     def update(self, ground, chests, fire, all_spr):
         if self.d_score != 0:
             self.d_score = 0
-        if self.time == 1:
+        if self.time == self.dig_speed:
             if self.cur_frame == 0:
                 if self.now_action != "d_under_person":
                     if self.act:
@@ -79,7 +81,7 @@ class Miner(pygame.sprite.Sprite):
                         if self.right_corner:
                             if elem.rect[0] == self.rect[0] + TILE_SIZE and elem.rect[1] == self.rect[1] - 11:
                                 elem.kill()
-                                if randint(1, 8) == 5:
+                                if randint(1, self.chance) == 5:
                                     Fire(all_spr, fire, self.rect[0] + TILE_SIZE, self.rect[1] - 11)
 
                             if elem.rect[0] == self.rect[0] + TILE_SIZE and \
@@ -91,12 +93,12 @@ class Miner(pygame.sprite.Sprite):
                             if elem.rect[0] == self.rect[0] - TILE_SIZE and \
                                     elem.rect[1] == self.rect[1] - 11 + TILE_SIZE:
                                 elem.kill()
-                                if randint(1, 8) == 5:
+                                if randint(1, self.chance) == 5:
                                     Fire(all_spr, fire, self.rect[0] - TILE_SIZE, self.rect[1] - 11 + TILE_SIZE)
 
                             if elem.rect[0] == self.rect[0] - TILE_SIZE and elem.rect[1] == self.rect[1] - 11:
                                 elem.kill()
-                                if randint(1, 8) == 5:
+                                if randint(1, self.chance) == 5:
                                     Fire(all_spr, fire, self.rect[0] - TILE_SIZE, self.rect[1] - 11)
 
                 if self.key == "d":
@@ -106,7 +108,7 @@ class Miner(pygame.sprite.Sprite):
                         if elem.rect[0] == self.rect[0] + TILE_SIZE and elem.rect[1] == self.rect[1] - 11:
                             elem.kill()
                             no_blocks = False
-                            if randint(1, 8) == 5:
+                            if randint(1, self.chance) == 5:
                                 Fire(all_spr, fire, self.rect[0] + TILE_SIZE, self.rect[1] - 11)
                             break
                     if no_blocks:
@@ -128,7 +130,7 @@ class Miner(pygame.sprite.Sprite):
                         if elem.rect[0] == self.rect[0] - TILE_SIZE and elem.rect[1] == self.rect[1] - 11:
                             elem.kill()
                             no_blocks = False
-                            if randint(1, 8) == 5:
+                            if randint(1, self.chance) == 5:
                                 Fire(all_spr, fire, self.rect[0] - TILE_SIZE, self.rect[1] - 11)
                             break
                     if no_blocks:

@@ -3,14 +3,10 @@ import pygame_gui
 from setting import *
 
 
-mine_sprites = 0
-mine_sprite = None
-
-
 class Mines:
     def __init__(self, clock):
         self.exit_dialog = None
-        self.confirm_dialog = None
+        self.conf_dialog = None
         self.window_surface = pygame.display.set_mode((window.width, window.height))
         self.bg = pygame.transform.scale(load_image("texture/in_shop.png"), (window.width, window.height))
         self.manager = pygame_gui.UIManager((window.width, window.height))
@@ -51,7 +47,6 @@ class Mines:
 
     def cycle(self, clock):
         while True:
-            global mine_sprites
             for event in pygame.event.get():
                 self.manager.process_events(event)
                 if event.type == pygame.QUIT:
@@ -68,25 +63,23 @@ class Mines:
                         self.buy_button_1.disable()
                     if event.ui_element == self.buy_button_2:
                         self.buy_button_2.disable()
-                        mine_sprites = 1
                     if event.ui_element == self.buy_button_3:
                         self.buy_button_3.disable()
-                        mine_sprites = 2
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
-                        self.confirm_dialog = pygame_gui.windows.UIConfirmationDialog(
+                        self.conf_dialog = pygame_gui.windows.UIConfirmationDialog(
                             rect=pygame.Rect((window.width // 2, window.height // 2),
                                              (300, 300)),
                             manager=self.manager,
                             window_title="Подтверждение",
-                            action_long_desc="Вы точно все купили?",
+                            action_long_desc="Вернуться назад?",
                             action_short_name="Да",
                             blocking=True)
                 if event.type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
                     if event.ui_element == self.exit_dialog:
                         terminate()
-                    if event.ui_element == self.confirm_dialog:
-                        return mine_sprites
+                    if event.ui_element == self.conf_dialog:
+                        return 1
             time_delta = clock.tick(FPS) / 1000.0
             self.window_surface.blit(self.bg, (0, 0))
             self.screen.blit(self.mine_1, (window.width // 11, window.height // 3))
@@ -120,7 +113,6 @@ class Inside_Shop:
         self.cycle(clock)
 
     def cycle(self, clock):
-        global mine_sprite
         while True:
             for event in pygame.event.get():
                 self.manager.process_events(event)
@@ -135,9 +127,11 @@ class Inside_Shop:
                         blocking=True)
                 if event.type == pygame_gui.UI_BUTTON_PRESSED:
                     if event.ui_element == self.mine_button:
-                        self.mine_button.kill()
-                        self.upgrade_button.kill()
-                        mine_sprite = Mines(clock).cycle(clock)
+                        self.mine_button.visible = False
+                        self.upgrade_button.visible = False
+                        Mines(clock).cycle(clock)
+                        self.mine_button.visible = True
+                        self.upgrade_button.visible = True
                     if event.ui_element == self.upgrade_button:
                         self.upgrade_button.kill()
                 if event.type == pygame.KEYDOWN:
@@ -154,7 +148,7 @@ class Inside_Shop:
                     if event.ui_element == self.exit_dialog:
                         terminate()
                     if event.ui_element == self.confirm_dialog:
-                        return mine_sprite
+                        return "back"
             time_delta = clock.tick(FPS) / 1000.0
             self.manager.update(time_delta=time_delta)
             self.window_surface.blit(self.bg, (0, 0))

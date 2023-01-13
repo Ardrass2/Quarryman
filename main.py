@@ -22,21 +22,16 @@ def start_mine():
     ok_but = None
     digger = Miner(all_sprites, load_image("texture/miner.png"), 10, 5, level_map)
     bg = pygame.transform.scale(load_image("texture/cave_mining.jpg"), (window.width, window.height))
-    heart = pygame.transform.scale(load_image("texture/heart.png"), (window.width * 0.04, window.height * 0.066))
-    heart_2 = pygame.transform.scale(load_image("texture/heart.png"), (window.width * 0.04, window.height * 0.066))
-    heart_3 = pygame.transform.scale(load_image("texture/heart.png"), (window.width * 0.04, window.height * 0.066))
+    hearts = [pygame.transform.scale(load_image("texture/heart.png"),
+                                     (window.width * 0.04, window.height * 0.066)) for _ in range(get_health())]
     manager = pygame_gui.UIManager((window.width, window.height))
     manager.get_theme().load_theme('theme.json')
     scores = 0
     score = pygame_gui.elements.UILabel(
-        relative_rect=pygame.Rect((window.width * 0.45, window.height * 0.005),
+        relative_rect=pygame.Rect((window.width * 0.45, 5),
                                   (window.width * 0.9, window.height * 0.08)), text=f"СЧЕТ - {str(scores)}$ ",
         manager=manager)
     n_lines = number_of_line + 1
-    screen.blit(bg, (0, 0))
-    screen.blit(heart, (5, 5))
-    screen.blit(heart_2, ((window.width * 0.04 + 6) * 1, 5))
-    screen.blit(heart_3, ((window.width * 0.04 + 5) * 2 - 2, 5))
     camera = Camera()
     tiles_group.update()
     tiles_group.draw(screen)
@@ -99,13 +94,8 @@ def start_mine():
         all_sprites.draw(screen)
         manager.update(time_delta=time_delta)
         manager.draw_ui(screen)
-        for i in range(1, digger.health + 1):
-            if i == 1:
-                screen.blit(heart, (5, 5))
-            if i == 2:
-                screen.blit(heart_2, ((window.width * 0.04 + 6) * 1, 5))
-            if i == 3:
-                screen.blit(heart_3, ((window.width * 0.04 + 5) * 2 - 2, 5))
+        for i in range(digger.health):
+            screen.blit(hearts[i], (window.width * 0.04 * i, 5))
         if digger.is_miner_dead() and ok_but is None:
             ok_but = dead(scores, manager, window.width, window.height)
             digger.kill()
