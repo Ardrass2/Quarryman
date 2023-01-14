@@ -1,10 +1,9 @@
 # Quarryman GAME
 import pygame.sprite
-import pygame_gui
 
 from camera import *
-from fire import *
 from character import *
+from fire import *
 from first_location import *
 from mining_location import *
 from music_player import *
@@ -20,6 +19,7 @@ def start_mine():
     exit_dialog = None
     confirm_dialog = None
     ok_but = None
+    level_look = get_level_look()
     digger = Miner(all_sprites, load_image("texture/miner.png"), 10, 5, level_map)
     bg = pygame.transform.scale(load_image("texture/cave_mining.jpg"), (window.width, window.height))
     hearts = [pygame.transform.scale(load_image("texture/heart.png"),
@@ -27,16 +27,30 @@ def start_mine():
     manager = pygame_gui.UIManager((window.width, window.height))
     manager.get_theme().load_theme('theme.json')
     scores = 0
+    need_money = int(money_need())
+    level = pygame_gui.elements.UILabel(
+        relative_rect=pygame.Rect((window.width * 0.35, 5), (window.width * 0.3, window.height * 0.08)),
+        text=f"Уровень - {int(get_level())}", manager=manager)
     score = pygame_gui.elements.UILabel(
         relative_rect=pygame.Rect((window.width * 0.45, 5),
                                   (window.width * 0.9, window.height * 0.08)), text=f"СЧЕТ - {str(scores)}$ ",
         manager=manager)
+    s = pygame_gui.windows.UIConfirmationDialog(
+        rect=pygame.Rect((window.width // 2, window.height // 2),
+                         (300, 300)),
+        manager=manager,
+        window_title="БулюмБулюм",
+        action_long_desc=f"Вы попали в шахту, ваша задача на сегодня накопать сокровищ на {need_money} $.",
+        action_short_name="Ок",
+        blocking=True)
     n_lines = number_of_line + 1
     camera = Camera()
     tiles_group.update()
     tiles_group.draw(screen)
     all_borders.update()
     all_borders.draw(screen)
+    pygame.event.set_allowed(
+        [pygame.KEYDOWN, pygame.QUIT, pygame_gui.UI_BUTTON_PRESSED, pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED])
     while True:
         time_delta = clock.tick(FPS) / 1000.0
         for event in pygame.event.get():
@@ -53,6 +67,8 @@ def start_mine():
             if ok_but is not None:
                 if event.type == pygame_gui.UI_BUTTON_PRESSED:
                     if event.ui_element == ok_but:
+                        change_score(scores)
+                        next_level()
                         for elem in all_sprites:
                             elem.kill()
                         return upper_world_cycle()
@@ -64,7 +80,7 @@ def start_mine():
                     for elem in all_sprites:
                         elem.kill()
                     return upper_world_cycle()
-            if event.type == pygame.KEYDOWN:
+            if event.type == pygame.KEYDOWN and ok_but is None:
                 if event.key == pygame.K_ESCAPE:
                     confirm_dialog = pygame_gui.windows.UIConfirmationDialog(
                         rect=pygame.Rect((window.width // 2, window.height // 2),
@@ -76,7 +92,7 @@ def start_mine():
                         blocking=True)
                 if digger.move(event.key) == "under":
                     digger.update_lines(new_line(all_sprites, tiles_group, chests_group, n_lines - 1,
-                                                 camera.all_diff_x, camera.all_diff_y))
+                                                 camera.all_diff_x, camera.all_diff_y, level_look))
                     generate_borders(all_sprites, all_borders, n_lines - 1, camera.all_diff_x, camera.all_diff_y)
                     n_lines += 2
                 all_borders.update()
@@ -84,12 +100,16 @@ def start_mine():
                 tiles_group.update()
                 tiles_group.draw(screen)
         screen.blit(bg, (0, 0))
+        fire_group.update(digger, tiles_group, chests_group, digger.rect[0], digger.rect[1])
+        if scores >= 0:
+            scores += digger.update(tiles_group, chests_group, fire_group, all_sprites)
+        if scores >= need_money and ok_but is None:
+            ok_but = win(scores, manager, window.width, window.height)
+            digger.kill()
         camera.update(digger)
         camera.all_diff_update()
         for sprite in all_sprites:
             camera.apply(sprite)
-        fire_group.update(digger, tiles_group, chests_group, digger.rect[0], digger.rect[1])
-        scores += digger.update(tiles_group, chests_group, fire_group, all_sprites)
         score.set_text(f"СЧЕТ - {str(scores)}$ ")
         all_sprites.draw(screen)
         manager.update(time_delta=time_delta)
@@ -99,6 +119,7 @@ def start_mine():
         if digger.is_miner_dead() and ok_but is None:
             ok_but = dead(scores, manager, window.width, window.height)
             digger.kill()
+            scores = 0
         pygame.display.flip()
         clock.tick(FPS)
 
@@ -145,9 +166,10 @@ def upper_world_cycle():
                         elem.kill()
                     manager.clear_and_reset()
                     global level_map
-                    level_map = generate_mine(all_sprites, tiles_group, chests_group, 2)
+                    level_map = generate_mine(all_sprites, tiles_group, chests_group, int(get_level_look()))
                     # for elem in level_map:
                     #     print(len(elem))
+                    print(get_score())
                     generate_borders(all_sprites, all_borders)
                     start_mine()
                 if event.key == pygame.K_e and digger.check_collide(shop):

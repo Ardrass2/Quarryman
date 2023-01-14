@@ -10,6 +10,26 @@ con = sqlite3.connect("data/Game_data")
 cur = con.cursor()
 
 
+def get_level_look():
+    result = cur.execute("""SELECT MAX(current_level) FROM Level""").fetchall()
+    return result[0][0]
+
+
+def next_level():
+    cur.execute(f"""INSERT INTO Level(money_need) VALUES (FLOOR((SELECT MAX(money_need) FROM Level) * 1.1 + 100))""")
+    con.commit()
+
+
+def money_need():
+    result = cur.execute("SELECT MAX(money_need) FROM Level").fetchall()
+    return result[0][0]
+
+
+def get_level():
+    result = cur.execute("SELECT MAX(level) FROM Level").fetchall()
+    return result[0][0]
+
+
 def get_health():
     result = cur.execute("""SELECT miner_health FROM Miner
                          WHERE buys_id = (SELECT MAX(buys_id) FROM Miner)""").fetchall()
@@ -28,7 +48,20 @@ def get_digger_luck():
     return result[0][0]
 
 
+def get_score():
+    result = cur.execute("""SELECT total_money FROM Score
+                         WHERE id = (SELECT MAX(id) FROM Score)""").fetchall()
+    return result[0][0]
+
+
+def change_score(value):
+    cur.execute(f"""INSERT INTO Score (change_money, total_money) VALUES ({value}, (SELECT total_money FROM Score
+                    WHERE id = (SELECT MAX(id) FROM Score)) + {value})""")
+    con.commit()
+
+
 def terminate():
+    con.close()
     pygame.quit()
     sys.exit()
 
@@ -132,6 +165,16 @@ def dead(score, manager, wind_w, wind_h):
     label = pygame_gui.elements.UILabel(text=f"ВЫ ПОГИБЛИ И ПОТЕРЯЛИ {score}$", manager=manager,
                                         relative_rect=pygame.Rect(wind_w // 4, wind_h / 2 - 100,
                                                                   wind_w * 2 // 3, 200))
+    ok_button = pygame_gui.elements.UIButton(text="Вернуться", manager=manager,
+                                             relative_rect=pygame.Rect(wind_w // 2 - 100, wind_h - 200,
+                                                                       wind_w // 4, 200))
+    return ok_button
+
+
+def win(score, manager, wind_w, wind_h):
+    label = pygame_gui.elements.UILabel(text=f"Вы заработали {score}$ и прошли уровень", manager=manager,
+                                        relative_rect=pygame.Rect(wind_w // 8, wind_h / 2 - 100,
+                                                                  wind_w * 4 // 5, 200))
     ok_button = pygame_gui.elements.UIButton(text="Вернуться", manager=manager,
                                              relative_rect=pygame.Rect(wind_w // 2 - 100, wind_h - 200,
                                                                        wind_w // 4, 200))

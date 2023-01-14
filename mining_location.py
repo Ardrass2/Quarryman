@@ -63,7 +63,7 @@ def generate_mine(all_sprites, tiles_group, chests_group, mine_sprites):
     return tile_map
 
 
-def new_line(all_sprites, tiles_group, chests_group, line_n, d_x, d_y):
+def new_line(all_sprites, tiles_group, chests_group, line_n, d_x, d_y, level_look):
     line_coords = []
     chest_number = [1, 2]
     for y in range(2):
@@ -74,7 +74,7 @@ def new_line(all_sprites, tiles_group, chests_group, line_n, d_x, d_y):
                 Chest(size, all_sprites, chests_group)
                 line_coords[y].append((-1, -1))
             else:
-                Tile(size, line_n, all_sprites, tiles_group, 2)
+                Tile(size, line_n, all_sprites, tiles_group, level_look)
                 line_coords[y].append(size)
     return line_coords
 

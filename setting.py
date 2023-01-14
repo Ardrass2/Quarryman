@@ -1,7 +1,7 @@
 from function import *
 
 # Кадры в секунду
-FPS = 60
+FPS = 75
 # Громкость музыки
 music_volume = update_music_value()
 # Громкость звуков
