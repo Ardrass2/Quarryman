@@ -3,6 +3,114 @@ import pygame_gui
 from setting import *
 
 
+class Upgrades:
+    def __init__(self, clock):
+        self.exit_dialog = None
+        self.conf_dialog = None
+        self.window_surface = pygame.display.set_mode((window.width, window.height))
+        self.bg = pygame.transform.scale(load_image("texture/in_shop.png"), (window.width, window.height))
+        self.manager = pygame_gui.UIManager((window.width, window.height))
+        self.manager.get_theme().load_theme('theme.json')
+
+        self.label_1 = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect(
+                (window.width // 3 - (window.width * 0.24), window.height // 2 * 1.1 - (window.height * 0.05)),
+                (window.width * 0.25, window.height * 0.1)),
+            text="Скорость - " + str(get_digger_speed()), manager=self.manager)
+
+        self.label_2 = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect(
+                (window.width // 1.64 - (window.width * 0.24), window.height // 2 * 1.1 - (window.height * 0.05)),
+                (window.width * 0.25, window.height * 0.1)),
+            text="Удача - " + str(get_digger_luck()), manager=self.manager)
+
+        self.label_3 = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect(
+                (window.width // 1.12 - (window.width * 0.24), window.height // 2 * 1.1 - (window.height * 0.05)),
+                (window.width * 0.25, window.height * 0.1)),
+            text="Жизни - " + str(get_health()), manager=self.manager)
+
+        self.buy_button_1 = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect(
+                (window.width // 3 - (window.width * 0.24), window.height * 2 // 3 - (window.height * 0.05)),
+                (window.width * 0.25, window.height * 0.1)),
+            text="Купить", manager=self.manager)
+
+        self.buy_button_2 = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect(
+                (window.width // 3 - (window.width * 0.24) + window.width * 0.28,
+                 window.height * 2 // 3 - (window.height * 0.05)),
+                (window.width * 0.25, window.height * 0.1)),
+            text="Купить", manager=self.manager)
+
+        self.buy_button_3 = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect(
+                (window.width // 3 - (window.width * 0.24) + window.width * 0.56,
+                 window.height * 2 // 3 - (window.height * 0.05)),
+                (window.width * 0.25, window.height * 0.1)),
+            text="Купить", manager=self.manager)
+
+        self.speed = pygame.transform.scale(load_image("texture/heart.png"),
+                                             (window.width * 0.12, window.width * 0.12))
+
+        self.luck = pygame.transform.scale(load_image("texture/heart.png"),
+                                             (window.width * 0.12, window.width * 0.12))
+
+        self.health = pygame.transform.scale(load_image("texture/heart.png"),
+                                             (window.width * 0.12, window.width * 0.12))
+
+        size = window.width, window.height
+        self.screen = pygame.display.set_mode(size)
+
+    def cycle(self, clock):
+        while True:
+            for event in pygame.event.get():
+                self.manager.process_events(event)
+                if event.type == pygame.QUIT:
+                    self.exit_dialog = pygame_gui.windows.UIConfirmationDialog(
+                        rect=pygame.Rect((window.width * 0.4, window.height * 0.3),
+                                         (window.width // 2, window.height // 2)),
+                        manager=self.manager,
+                        window_title="Подтверждение",
+                        action_long_desc="Вы уверены, что хотите выйти?",
+                        action_short_name="Да",
+                        blocking=True)
+                if event.type == pygame_gui.UI_BUTTON_PRESSED:
+                    if event.ui_element == self.buy_button_1:
+                        change_speed(1)
+                        self.label_1.set_text("Скорость - " + str(get_digger_speed()))
+                    if event.ui_element == self.buy_button_2:
+                        change_luck(1)
+                        self.label_2.set_text("Удача - " + str(get_digger_luck()))
+                    if event.ui_element == self.buy_button_3:
+                        change_health(1)
+                        self.label_3.set_text("Жизни - " + str(get_health()))
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.conf_dialog = pygame_gui.windows.UIConfirmationDialog(
+                            rect=pygame.Rect((window.width // 2, window.height // 2),
+                                             (300, 300)),
+                            manager=self.manager,
+                            window_title="Подтверждение",
+                            action_long_desc="Вернуться назад?",
+                            action_short_name="Да",
+                            blocking=True)
+                if event.type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
+                    if event.ui_element == self.exit_dialog:
+                        terminate()
+                    if event.ui_element == self.conf_dialog:
+                        return 1
+            time_delta = clock.tick(FPS) / 1000.0
+            self.window_surface.blit(self.bg, (0, 0))
+            self.screen.blit(self.speed, (window.width // 6.44, window.height // 3 * 0.8))
+            self.screen.blit(self.luck, (window.width // 2.3, window.height // 3 * 0.8))
+            self.screen.blit(self.health, (window.width // 1.4, window.height // 3 * 0.8))
+            self.manager.update(time_delta=time_delta)
+            self.manager.draw_ui(self.window_surface)
+            pygame.display.update()
+            pygame.display.flip()
+
+
 class Mines:
     def __init__(self, clock):
         self.exit_dialog = None
@@ -43,7 +151,6 @@ class Mines:
 
         size = window.width, window.height
         self.screen = pygame.display.set_mode(size)
-        self.cycle(clock)
 
     def cycle(self, clock):
         while True:
@@ -134,6 +241,7 @@ class Inside_Shop:
                         self.upgrade_button.visible = True
                     if event.ui_element == self.upgrade_button:
                         self.upgrade_button.kill()
+                        Upgrades(clock).cycle(clock)
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         self.confirm_dialog = pygame_gui.windows.UIConfirmationDialog(

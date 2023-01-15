@@ -60,6 +60,26 @@ def change_score(value):
     con.commit()
 
 
+def change_speed(value):
+    cur.execute(f"""INSERT INTO Miner (dig_speed, dig_luck, miner_health) VALUES ((SELECT dig_speed FROM Miner
+                    WHERE buys_id = (SELECT MAX(buys_id) FROM Miner)) + {value}, {get_digger_luck()}, {get_health()})""")
+    con.commit()
+
+
+def change_luck(value):
+    cur.execute(f"""INSERT INTO Miner (dig_speed, dig_luck, miner_health) VALUES 
+    ({get_digger_speed()}, (SELECT dig_luck FROM Miner
+                            WHERE buys_id = (SELECT MAX(buys_id) FROM Miner)) + {value}, {get_health()})""")
+    con.commit()
+
+
+def change_health(value):
+    cur.execute(f"""INSERT INTO Miner (dig_speed, dig_luck, miner_health) VALUES 
+    ({get_digger_speed()}, {get_digger_luck()}, (SELECT miner_health FROM Miner
+                            WHERE buys_id = (SELECT MAX(buys_id) FROM Miner)) + {value})""")
+    con.commit()
+
+
 def terminate():
     con.close()
     pygame.quit()
