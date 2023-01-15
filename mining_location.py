@@ -36,10 +36,13 @@ class Tile(pygame.sprite.Sprite):
             else:
                 self.image = pygame.transform.scale(load_image("texture/dirt.png"), (TILE_SIZE, TILE_SIZE))
             self.rect = self.image.get_rect().move(size)
-        elif mine_level == 1:
-            self.image = pygame.transform.scale(load_image("texture/rock.png"), (TILE_SIZE, TILE_SIZE))
+        if mine_level == 1:
+            self.image = pygame.transform.scale(load_image("texture/dirt1.png"), (TILE_SIZE, TILE_SIZE))
             self.rect = self.image.get_rect().move(size)
         elif mine_level == 2:
+            self.image = pygame.transform.scale(load_image("texture/rock.png"), (TILE_SIZE, TILE_SIZE))
+            self.rect = self.image.get_rect().move(size)
+        elif mine_level == 3:
             self.image = pygame.transform.scale(load_image("texture/rock_2.jpg"), (TILE_SIZE, TILE_SIZE))
             self.rect = self.image.get_rect().move(size)
 

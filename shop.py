@@ -1,5 +1,3 @@
-import pygame_gui
-
 from setting import *
 
 
@@ -11,6 +9,10 @@ class Upgrades:
         self.bg = pygame.transform.scale(load_image("texture/in_shop.png"), (window.width, window.height))
         self.manager = pygame_gui.UIManager((window.width, window.height))
         self.manager.get_theme().load_theme('theme.json')
+        self.score = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect((window.width * 0.45, 5),
+                                      (window.width * 0.9, window.height * 0.08)), text=f"СЧЕТ - {str(get_score())}$ ",
+            manager=self.manager)
 
         self.label_1 = pygame_gui.elements.UILabel(
             relative_rect=pygame.Rect(
@@ -35,6 +37,9 @@ class Upgrades:
                 (window.width // 3 - (window.width * 0.24), window.height * 2 // 3 - (window.height * 0.05)),
                 (window.width * 0.25, window.height * 0.1)),
             text="Купить", manager=self.manager)
+        if get_digger_speed() <= 3:
+            self.buy_button_1.set_text("Максимум")
+            self.buy_button_1.disable()
 
         self.buy_button_2 = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect(
@@ -42,6 +47,9 @@ class Upgrades:
                  window.height * 2 // 3 - (window.height * 0.05)),
                 (window.width * 0.25, window.height * 0.1)),
             text="Купить", manager=self.manager)
+        if get_digger_luck() > 14:
+            self.buy_button_2.set_text("Максимум")
+            self.buy_button_2.disable()
 
         self.buy_button_3 = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect(
@@ -49,12 +57,15 @@ class Upgrades:
                  window.height * 2 // 3 - (window.height * 0.05)),
                 (window.width * 0.25, window.height * 0.1)),
             text="Купить", manager=self.manager)
+        if get_health() > 6:
+            self.buy_button_3.set_text("Максимум")
+            self.buy_button_3.disable()
 
         self.speed = pygame.transform.scale(load_image("texture/heart.png"),
-                                             (window.width * 0.12, window.width * 0.12))
+                                            (window.width * 0.12, window.width * 0.12))
 
         self.luck = pygame.transform.scale(load_image("texture/heart.png"),
-                                             (window.width * 0.12, window.width * 0.12))
+                                           (window.width * 0.12, window.width * 0.12))
 
         self.health = pygame.transform.scale(load_image("texture/heart.png"),
                                              (window.width * 0.12, window.width * 0.12))
@@ -77,14 +88,44 @@ class Upgrades:
                         blocking=True)
                 if event.type == pygame_gui.UI_BUTTON_PRESSED:
                     if event.ui_element == self.buy_button_1:
-                        change_speed(1)
-                        self.label_1.set_text("Скорость - " + str(get_digger_speed()))
+                        if int(get_score()) < 14000:
+                            self.buy_button_1.set_text("Не хватает средств")
+                            self.buy_button_1.disable()
+                        else:
+                            if int(get_digger_speed()) >= 3:
+                                change_speed(-1)
+                                change_score(-14000)
+                                self.score.set_text("СЧЕТ - " + str(get_score()) + "$")
+                                self.label_1.set_text("Скорость - " + str(get_digger_speed()))
+                            else:
+                                self.buy_button_1.set_text("Максимум")
+                                self.buy_button_1.disable()
                     if event.ui_element == self.buy_button_2:
-                        change_luck(1)
-                        self.label_2.set_text("Удача - " + str(get_digger_luck()))
+                        if int(get_score()) < 2000:
+                            self.buy_button_2.set_text("Не хватает средств")
+                            self.buy_button_2.disable()
+                        else:
+                            if int(get_digger_luck()) < 15:
+                                change_luck(1)
+                                change_score(-2000)
+                                self.score.set_text("СЧЕТ - " + str(get_score()) + "$")
+                                self.label_2.set_text("Удача - " + str(get_digger_luck()))
+                            else:
+                                self.buy_button_2.set_text("Максимум")
+                                self.buy_button_2.disable()
                     if event.ui_element == self.buy_button_3:
-                        change_health(1)
-                        self.label_3.set_text("Жизни - " + str(get_health()))
+                        if int(get_score()) < 8000:
+                            self.buy_button_1.set_text("Не хватает средств")
+                            self.buy_button_1.disable()
+                        else:
+                            if int(get_health()) < 7:
+                                change_health(1)
+                                change_score(-8000)
+                                self.score.set_text("СЧЕТ - " + str(get_score()) + "$")
+                                self.label_3.set_text("Жизни - " + str(get_health()))
+                            else:
+                                self.buy_button_3.set_text("Максимум")
+                                self.buy_button_3.disable()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         self.conf_dialog = pygame_gui.windows.UIConfirmationDialog(
@@ -119,12 +160,18 @@ class Mines:
         self.bg = pygame.transform.scale(load_image("texture/in_shop.png"), (window.width, window.height))
         self.manager = pygame_gui.UIManager((window.width, window.height))
         self.manager.get_theme().load_theme('theme.json')
+        self.score = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect((window.width * 0.45, 5),
+                                      (window.width * 0.9, window.height * 0.08)), text=f"СЧЕТ - {str(get_score())}$ ",
+            manager=self.manager)
 
         self.buy_button_1 = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect(
                 (window.width // 3 - (window.width * 0.24), window.height * 2 // 3 - (window.height * 0.05)),
                 (window.width * 0.25, window.height * 0.1)),
             text="Купить", manager=self.manager)
+        if get_current_level() >= 1 or get_score():
+            self.buy_button_1.disable()
 
         self.buy_button_2 = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect(
@@ -132,6 +179,8 @@ class Mines:
                  window.height * 2 // 3 - (window.height * 0.05)),
                 (window.width * 0.25, window.height * 0.1)),
             text="Купить", manager=self.manager)
+        if get_current_level() >= 2:
+            self.buy_button_2.disable()
 
         self.buy_button_3 = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect(
@@ -139,6 +188,8 @@ class Mines:
                  window.height * 2 // 3 - (window.height * 0.05)),
                 (window.width * 0.25, window.height * 0.1)),
             text="Купить", manager=self.manager)
+        if get_current_level() == 3:
+            self.buy_button_3.disable()
 
         self.mine_1 = pygame.transform.scale(load_image("texture/dirt1.png"),
                                              (window.width * 0.15, window.width * 0.15))
@@ -206,6 +257,11 @@ class Inside_Shop:
         self.bg = pygame.transform.scale(load_image("texture/in_shop.png"), (window.width, window.height))
         self.manager = pygame_gui.UIManager((window.width, window.height))
         self.manager.get_theme().load_theme('theme.json')
+        self.score = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect((window.width * 0.45, 5),
+                                      (window.width * 0.9, window.height * 0.08)), text=f"СЧЕТ - {str(get_score())}$ ",
+            manager=self.manager)
+
         self.mine_button = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect(
                 (window.width // 2 - (window.width * 0.25), window.height // 2 - (window.height * 0.05)),
@@ -223,6 +279,7 @@ class Inside_Shop:
         while True:
             for event in pygame.event.get():
                 self.manager.process_events(event)
+                self.score.set_text("СЧЕТ - " + str(get_score()) + "$")
                 if event.type == pygame.QUIT:
                     self.exit_dialog = pygame_gui.windows.UIConfirmationDialog(
                         rect=pygame.Rect((window.width * 0.4, window.height * 0.3),
@@ -240,7 +297,6 @@ class Inside_Shop:
                         self.mine_button.visible = True
                         self.upgrade_button.visible = True
                     if event.ui_element == self.upgrade_button:
-                        self.upgrade_button.kill()
                         Upgrades(clock).cycle(clock)
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:

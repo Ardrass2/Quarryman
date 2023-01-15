@@ -25,6 +25,11 @@ def money_need():
     return result[0][0]
 
 
+def get_current_level():
+    result = cur.execute("SELECT MAX(current_level) FROM Level").fetchall()
+    return result[0][0]
+
+
 def get_level():
     result = cur.execute("SELECT MAX(level) FROM Level").fetchall()
     return result[0][0]
