@@ -16,7 +16,7 @@ def get_level_look():
 
 
 def next_level():
-    cur.execute(f"""INSERT INTO Level(money_need) VALUES (FLOOR((SELECT MAX(money_need) FROM Level) * 1.1 + 100))""")
+    cur.execute(f"""INSERT INTO Level(money_need) VALUES ((SELECT MAX(money_need) FROM Level) * 1.1 + 100)""")
     con.commit()
 
 

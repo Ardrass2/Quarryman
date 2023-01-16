@@ -225,10 +225,10 @@ class Miner(pygame.sprite.Sprite):
                         self.walk_sound.start()
                 if self.right_corner:
                     self.change_view_side()
-        elif key_down == pygame.K_RIGHT:
+        elif key_down == pygame.K_RIGHT and not self.act:
             if not self.right_corner:
                 self.change_view_side()
-        elif key_down == pygame.K_LEFT:
+        elif key_down == pygame.K_LEFT and not self.act:
             if self.right_corner:
                 self.change_view_side()
 

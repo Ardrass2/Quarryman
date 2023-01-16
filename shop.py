@@ -36,7 +36,7 @@ class Upgrades:
             relative_rect=pygame.Rect(
                 (window.width // 3 - (window.width * 0.24), window.height * 2 // 3 - (window.height * 0.05)),
                 (window.width * 0.25, window.height * 0.1)),
-            text="Купить", manager=self.manager)
+            text="14000$", manager=self.manager)
         if get_digger_speed() <= 3:
             self.buy_button_1.set_text("Максимум")
             self.buy_button_1.disable()
@@ -46,7 +46,7 @@ class Upgrades:
                 (window.width // 3 - (window.width * 0.24) + window.width * 0.28,
                  window.height * 2 // 3 - (window.height * 0.05)),
                 (window.width * 0.25, window.height * 0.1)),
-            text="Купить", manager=self.manager)
+            text="2000$", manager=self.manager)
         if get_digger_luck() > 14:
             self.buy_button_2.set_text("Максимум")
             self.buy_button_2.disable()
@@ -56,7 +56,7 @@ class Upgrades:
                 (window.width // 3 - (window.width * 0.24) + window.width * 0.56,
                  window.height * 2 // 3 - (window.height * 0.05)),
                 (window.width * 0.25, window.height * 0.1)),
-            text="Купить", manager=self.manager)
+            text="8000$", manager=self.manager)
         if get_health() > 6:
             self.buy_button_3.set_text("Максимум")
             self.buy_button_3.disable()
@@ -115,8 +115,8 @@ class Upgrades:
                                 self.buy_button_2.disable()
                     if event.ui_element == self.buy_button_3:
                         if int(get_score()) < 8000:
-                            self.buy_button_1.set_text("Не хватает средств")
-                            self.buy_button_1.disable()
+                            self.buy_button_3.set_text("Не хватает средств")
+                            self.buy_button_3.disable()
                         else:
                             if int(get_health()) < 7:
                                 change_health(1)
@@ -169,7 +169,7 @@ class Mines:
             relative_rect=pygame.Rect(
                 (window.width // 3 - (window.width * 0.24), window.height * 2 // 3 - (window.height * 0.05)),
                 (window.width * 0.25, window.height * 0.1)),
-            text="Купить", manager=self.manager)
+            text="3200$", manager=self.manager)
         if get_current_level() >= 1 or get_score():
             self.buy_button_1.disable()
 
@@ -178,7 +178,7 @@ class Mines:
                 (window.width // 3 - (window.width * 0.24) + window.width * 0.28,
                  window.height * 2 // 3 - (window.height * 0.05)),
                 (window.width * 0.25, window.height * 0.1)),
-            text="Купить", manager=self.manager)
+            text="15000$", manager=self.manager)
         if get_current_level() >= 2:
             self.buy_button_2.disable()
 
@@ -187,7 +187,7 @@ class Mines:
                 (window.width // 3 - (window.width * 0.24) + window.width * 0.56,
                  window.height * 2 // 3 - (window.height * 0.05)),
                 (window.width * 0.25, window.height * 0.1)),
-            text="Купить", manager=self.manager)
+            text="45000$", manager=self.manager)
         if get_current_level() == 3:
             self.buy_button_3.disable()
 

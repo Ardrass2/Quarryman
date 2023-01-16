@@ -50,7 +50,7 @@ def start_mine():
     all_borders.update()
     all_borders.draw(screen)
     pygame.event.set_allowed(
-        [pygame.KEYDOWN, pygame.QUIT, pygame_gui.UI_BUTTON_PRESSED, pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED])
+        [pygame.KEYDOWN, pygame.QUIT, pygame_gui.UI_BUTTON_PRESSED, pdygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED])
     while True:
         time_delta = clock.tick(FPS) / 1000.0
         for event in pygame.event.get():
@@ -68,7 +68,8 @@ def start_mine():
                 if event.type == pygame_gui.UI_BUTTON_PRESSED:
                     if event.ui_element == ok_but:
                         change_score(scores)
-                        next_level()
+                        if scores != 0:
+                            next_level()
                         for elem in all_sprites:
                             elem.kill()
                         return upper_world_cycle()
@@ -106,8 +107,9 @@ def start_mine():
         if scores >= need_money and ok_but is None:
             ok_but = win(scores, manager, window.width, window.height)
             digger.kill()
-        camera.update(digger)
-        camera.all_diff_update()
+        if ok_but is None:
+            camera.update(digger)
+            camera.all_diff_update()
         for sprite in all_sprites:
             camera.apply(sprite)
         score.set_text(f"СЧЕТ - {str(scores)}$ ")
