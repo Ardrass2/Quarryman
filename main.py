@@ -50,7 +50,7 @@ def start_mine():
     all_borders.update()
     all_borders.draw(screen)
     pygame.event.set_allowed(
-        [pygame.KEYDOWN, pygame.QUIT, pygame_gui.UI_BUTTON_PRESSED, pdygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED])
+        [pygame.KEYDOWN, pygame.QUIT, pygame_gui.UI_BUTTON_PRESSED, pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED])
     while True:
         time_delta = clock.tick(FPS) / 1000.0
         for event in pygame.event.get():

@@ -60,10 +60,26 @@ class Miner(pygame.sprite.Sprite):
     def update_lines(self, new_line):
         self.level_map = [*self.level_map, *new_line]
 
+    def go_down(self, ground, chests):
+        if len(self.collide_with(ground)) == 0:
+            if self.cell_y > 5:
+                for elem in ground:
+                    if elem.rect[1] == self.rect[1] - 11 - 4 * TILE_SIZE:
+                        elem.kill()
+            self.rect = self.rect.move(0, TILE_SIZE)
+            self.get_chest(chests)
+            self.cell_y = self.cell_y + 1
+        else:
+            self.key = ""
+            self.act = ""
+
     def update(self, ground, chests, fire, all_spr):
         if self.d_score != 0:
             self.d_score = 0
-        if self.time == self.dig_speed:
+        if self.key == "go under" and self.time == self.dig_speed // 2:
+            self.go_down(ground, chests)
+            return self.d_score
+        elif self.time == self.dig_speed:
             if self.cur_frame == 0:
                 if self.now_action != "d_under_person":
                     if self.act:
@@ -87,7 +103,7 @@ class Miner(pygame.sprite.Sprite):
                             if elem.rect[0] == self.rect[0] + TILE_SIZE and \
                                     elem.rect[1] == self.rect[1] - 11 + TILE_SIZE:
                                 elem.kill()
-                                if randint(1, 8) == 5:
+                                if randint(1, self.chance) == 5:
                                     Fire(all_spr, fire, self.rect[0] + TILE_SIZE, self.rect[1] - 11 + TILE_SIZE)
                         else:
                             if elem.rect[0] == self.rect[0] - TILE_SIZE and \
@@ -115,13 +131,9 @@ class Miner(pygame.sprite.Sprite):
                         self.rect = self.rect.move(TILE_SIZE, 0)
                         self.cell_x = self.cell_x + 1
                         self.get_chest(chests)
-                        while len(self.collide_with(ground)) == 0:
-                            for elem in ground:
-                                if elem.rect[1] == self.rect[1] - 11 - 4 * TILE_SIZE:
-                                    elem.kill()
-                            self.rect = self.rect.move(0, TILE_SIZE)
-                            self.get_chest(chests)
-                            self.cell_y = self.cell_y + 1
+                        if len(self.collide_with(ground)) == 0:
+                            self.key = "go under"
+                            self.act = "go down"
 
                 if self.key == "a":
                     self.key = ""
@@ -137,14 +149,10 @@ class Miner(pygame.sprite.Sprite):
                         self.rect = self.rect.move(-TILE_SIZE, 0)
                         self.get_chest(chests)
                         self.cell_x = self.cell_x - 1
-                        while len(self.collide_with(ground)) == 0:
-                            if self.cell_y > 5:
-                                for elem in ground:
-                                    if elem.rect[1] == self.rect[1] - 11 - 4 * TILE_SIZE:
-                                        elem.kill()
-                            self.rect = self.rect.move(0, TILE_SIZE)
-                            self.get_chest(chests)
-                            self.cell_y = self.cell_y + 1
+                        if len(self.collide_with(ground)) == 0:
+                            self.key = "go under"
+                            self.act = "go down"
+
                 self.destroy_sound.stop()
                 self.walk_sound.stop()
 

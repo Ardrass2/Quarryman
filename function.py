@@ -10,13 +10,21 @@ con = sqlite3.connect("data/Game_data")
 cur = con.cursor()
 
 
+def change_current_level(level):
+    cur.execute(f"""UPDATE Level
+                    SET current_level = {level}
+                    WHERE level = (SELECT MAX(level) FROM Level)""")
+    con.commit()
+
+
 def get_level_look():
     result = cur.execute("""SELECT MAX(current_level) FROM Level""").fetchall()
     return result[0][0]
 
 
 def next_level():
-    cur.execute(f"""INSERT INTO Level(money_need) VALUES ((SELECT MAX(money_need) FROM Level) * 1.1 + 100)""")
+    cur.execute(f"""INSERT INTO Level(money_need, current_level) 
+                VALUES ((SELECT MAX(money_need) FROM Level) * 1.1 + 100, (SELECT MAX(current_level) FROM Level))""")
     con.commit()
 
 

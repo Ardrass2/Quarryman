@@ -170,7 +170,7 @@ class Mines:
                 (window.width // 3 - (window.width * 0.24), window.height * 2 // 3 - (window.height * 0.05)),
                 (window.width * 0.25, window.height * 0.1)),
             text="3200$", manager=self.manager)
-        if get_current_level() >= 1 or get_score():
+        if get_current_level() == 1:
             self.buy_button_1.disable()
 
         self.buy_button_2 = pygame_gui.elements.UIButton(
@@ -218,11 +218,36 @@ class Mines:
                         blocking=True)
                 if event.type == pygame_gui.UI_BUTTON_PRESSED:
                     if event.ui_element == self.buy_button_1:
-                        self.buy_button_1.disable()
+                        if int(get_score()) < 3200:
+                            self.buy_button_1.set_text("Не хватает средств")
+                            self.buy_button_1.disable()
+                        else:
+                            change_current_level(1)
+                            self.buy_button_1.set_text("Куплено")
+                            self.buy_button_1.disable()
+                            change_score(-3200)
+                            self.score.set_text("СЧЕТ - " + str(get_score()) + "$")
+
                     if event.ui_element == self.buy_button_2:
-                        self.buy_button_2.disable()
+                        if int(get_score()) < 14000:
+                            self.buy_button_2.set_text("Не хватает средств")
+                            self.buy_button_2.disable()
+                        else:
+                            change_current_level(2)
+                            self.buy_button_2.set_text("Куплено")
+                            self.buy_button_2.disable()
+                            change_score(-14000)
+                            self.score.set_text("СЧЕТ - " + str(get_score()) + "$")
                     if event.ui_element == self.buy_button_3:
-                        self.buy_button_3.disable()
+                        if int(get_score()) < 45000:
+                            self.buy_button_3.set_text("Не хватает средств")
+                            self.buy_button_3.disable()
+                        else:
+                            change_current_level(3)
+                            self.buy_button_3.set_text("Куплено")
+                            self.buy_button_3.disable()
+                            change_score(-45000)
+                            self.score.set_text("СЧЕТ - " + str(get_score()) + "$")
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         self.conf_dialog = pygame_gui.windows.UIConfirmationDialog(
