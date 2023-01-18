@@ -3,7 +3,6 @@ from random import randint
 from setting import *
 import pygame
 
-TILE_SIZE = window.width * 0.1
 number_of_chests = 5
 number_of_line = 10
 
@@ -11,19 +10,22 @@ number_of_line = 10
 class Chest(pygame.sprite.Sprite):
     def __init__(self, size, all_sprites, tiles_group):
         super().__init__(tiles_group, all_sprites)
-        self.image = pygame.transform.scale(load_image("texture/chest.png"), (TILE_SIZE, TILE_SIZE))
+        self.image = pygame.transform.scale(load_image("texture/chest.png"), (window.tile_size, window.tile_size))
         self.rect = self.image.get_rect().move(size)
 
 
 class Border(pygame.sprite.Sprite):
     def __init__(self, all_sprites, borders, y, left, dx, dy):
         super().__init__(borders, all_sprites)
-        self.image = pygame.transform.scale(load_image("texture/side_border.png"), (TILE_SIZE * 5, TILE_SIZE))
+        self.image = pygame.transform.scale(load_image("texture/side_border.png"),
+                                            (window.tile_size * 5, window.tile_size))
         if not left:
             print(y)
-            self.rect = self.image.get_rect().move(-6 * TILE_SIZE + dx, (window.height * 2 // 3) + (y * TILE_SIZE) + dy)
+            self.rect = self.image.get_rect().move(-6 * window.tile_size + dx,
+                                                   (window.height * 2 // 3) + (y * window.tile_size) + dy)
         else:
-            self.rect = self.image.get_rect().move(15 * TILE_SIZE + dx, (window.height * 2 // 3) + (y * TILE_SIZE) + dy)
+            self.rect = self.image.get_rect().move(15 * window.tile_size + dx,
+                                                   (window.height * 2 // 3) + (y * window.tile_size) + dy)
 
 
 class Tile(pygame.sprite.Sprite):
@@ -32,18 +34,20 @@ class Tile(pygame.sprite.Sprite):
         print(mine_level)
         if mine_level == 0:
             if y < 1:
-                self.image = pygame.transform.scale(load_image("texture/grass.png"), (TILE_SIZE, TILE_SIZE))
+                self.image = pygame.transform.scale(load_image("texture/grass.png"),
+                                                    (window.tile_size, window.tile_size))
             else:
-                self.image = pygame.transform.scale(load_image("texture/dirt.png"), (TILE_SIZE, TILE_SIZE))
+                self.image = pygame.transform.scale(load_image("texture/dirt.png"),
+                                                    (window.tile_size, window.tile_size))
             self.rect = self.image.get_rect().move(size)
         if mine_level == 1:
-            self.image = pygame.transform.scale(load_image("texture/dirt1.png"), (TILE_SIZE, TILE_SIZE))
+            self.image = pygame.transform.scale(load_image("texture/dirt1.png"), (window.tile_size, window.tile_size))
             self.rect = self.image.get_rect().move(size)
         elif mine_level == 2:
-            self.image = pygame.transform.scale(load_image("texture/rock.png"), (TILE_SIZE, TILE_SIZE))
+            self.image = pygame.transform.scale(load_image("texture/rock.png"), (window.tile_size, window.tile_size))
             self.rect = self.image.get_rect().move(size)
         elif mine_level == 3:
-            self.image = pygame.transform.scale(load_image("texture/rock_2.jpg"), (TILE_SIZE, TILE_SIZE))
+            self.image = pygame.transform.scale(load_image("texture/rock_2.jpg"), (window.tile_size, window.tile_size))
             self.rect = self.image.get_rect().move(size)
 
 
@@ -53,7 +57,7 @@ def generate_mine(all_sprites, tiles_group, chests_group, mine_sprites):
     for y in range(number_of_line):
         tile_map.append([])
         for x in range(16):
-            size = x * TILE_SIZE - TILE_SIZE, (window.height * 2 // 3) + (y * TILE_SIZE)
+            size = x * window.tile_size - window.tile_size, (window.height * 2 // 3) + (y * window.tile_size)
             if x != 8 or y != 0:
                 if randint(0, 15) in chest_number and number_of_chests > 0 and y > 1:
                     Chest(size, all_sprites, chests_group)
@@ -72,7 +76,8 @@ def new_line(all_sprites, tiles_group, chests_group, line_n, d_x, d_y, level_loo
     for y in range(2):
         line_coords.append([])
         for x in range(16):
-            size = x * TILE_SIZE - TILE_SIZE + d_x, (window.height * 2 // 3) + ((line_n + y) * TILE_SIZE) + d_y
+            size = x * window.tile_size - window.tile_size + d_x,\
+                   (window.height * 2 // 3) + ((line_n + y) * window.tile_size) + d_y
             if randint(0, 30) in chest_number and number_of_chests > 0:
                 Chest(size, all_sprites, chests_group)
                 line_coords[y].append((-1, -1))

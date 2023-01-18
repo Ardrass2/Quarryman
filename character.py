@@ -3,7 +3,6 @@ from random import randint
 import pygame.sprite
 
 from fire import Fire
-from mining_location import TILE_SIZE
 from music_player import Sound
 from setting import *
 
@@ -27,7 +26,7 @@ class Miner(pygame.sprite.Sprite):
         self.time = 0
         self.cut_sheet("stay")
         self.cur_frame = 0
-        self.image = pygame.transform.scale(self.frames[self.cur_frame], (TILE_SIZE, TILE_SIZE - 10))
+        self.image = pygame.transform.scale(self.frames[self.cur_frame], (window.tile_size, window.tile_size - 10))
         self.rect.top = level_map[0][len(level_map[0]) // 2][1] + 11
         self.rect.left = level_map[0][len(level_map[0]) // 2][0]
         self.level_map[0][len(level_map[0]) // 2] = (0, 0)
@@ -64,9 +63,9 @@ class Miner(pygame.sprite.Sprite):
         if len(self.collide_with(ground)) == 0:
             if self.cell_y > 5:
                 for elem in ground:
-                    if elem.rect[1] == self.rect[1] - 11 - 4 * TILE_SIZE:
+                    if elem.rect[1] == self.rect[1] - 11 - 4 * window.tile_size:
                         elem.kill()
-            self.rect = self.rect.move(0, TILE_SIZE)
+            self.rect = self.rect.move(0, window.tile_size)
             self.get_chest(chests)
             self.cell_y = self.cell_y + 1
         else:
@@ -95,40 +94,42 @@ class Miner(pygame.sprite.Sprite):
                     self.key = ""
                     for elem in ground:
                         if self.right_corner:
-                            if elem.rect[0] == self.rect[0] + TILE_SIZE and elem.rect[1] == self.rect[1] - 11:
+                            if elem.rect[0] == self.rect[0] + window.tile_size and elem.rect[1] == self.rect[1] - 11:
                                 elem.kill()
                                 if randint(1, self.chance) == 5:
-                                    Fire(all_spr, fire, self.rect[0] + TILE_SIZE, self.rect[1] - 11)
+                                    Fire(all_spr, fire, self.rect[0] + window.tile_size, self.rect[1] - 11)
 
-                            if elem.rect[0] == self.rect[0] + TILE_SIZE and \
-                                    elem.rect[1] == self.rect[1] - 11 + TILE_SIZE:
+                            if elem.rect[0] == self.rect[0] + window.tile_size and \
+                                    elem.rect[1] == self.rect[1] - 11 + window.tile_size:
                                 elem.kill()
                                 if randint(1, self.chance) == 5:
-                                    Fire(all_spr, fire, self.rect[0] + TILE_SIZE, self.rect[1] - 11 + TILE_SIZE)
+                                    Fire(all_spr, fire, self.rect[0] + window.tile_size,
+                                         self.rect[1] - 11 + window.tile_size)
                         else:
-                            if elem.rect[0] == self.rect[0] - TILE_SIZE and \
-                                    elem.rect[1] == self.rect[1] - 11 + TILE_SIZE:
+                            if elem.rect[0] == self.rect[0] - window.tile_size and \
+                                    elem.rect[1] == self.rect[1] - 11 + window.tile_size:
                                 elem.kill()
                                 if randint(1, self.chance) == 5:
-                                    Fire(all_spr, fire, self.rect[0] - TILE_SIZE, self.rect[1] - 11 + TILE_SIZE)
+                                    Fire(all_spr, fire, self.rect[0] - window.tile_size,
+                                         self.rect[1] - 11 + window.tile_size)
 
-                            if elem.rect[0] == self.rect[0] - TILE_SIZE and elem.rect[1] == self.rect[1] - 11:
+                            if elem.rect[0] == self.rect[0] - window.tile_size and elem.rect[1] == self.rect[1] - 11:
                                 elem.kill()
                                 if randint(1, self.chance) == 5:
-                                    Fire(all_spr, fire, self.rect[0] - TILE_SIZE, self.rect[1] - 11)
+                                    Fire(all_spr, fire, self.rect[0] - window.tile_size, self.rect[1] - 11)
 
                 if self.key == "d":
                     self.key = ""
                     no_blocks = True
                     for elem in ground:
-                        if elem.rect[0] == self.rect[0] + TILE_SIZE and elem.rect[1] == self.rect[1] - 11:
+                        if elem.rect[0] == self.rect[0] + window.tile_size and elem.rect[1] == self.rect[1] - 11:
                             elem.kill()
                             no_blocks = False
                             if randint(1, self.chance) == 5:
-                                Fire(all_spr, fire, self.rect[0] + TILE_SIZE, self.rect[1] - 11)
+                                Fire(all_spr, fire, self.rect[0] + window.tile_size, self.rect[1] - 11)
                             break
                     if no_blocks:
-                        self.rect = self.rect.move(TILE_SIZE, 0)
+                        self.rect = self.rect.move(window.tile_size, 0)
                         self.cell_x = self.cell_x + 1
                         self.get_chest(chests)
                         if len(self.collide_with(ground)) == 0:
@@ -139,14 +140,14 @@ class Miner(pygame.sprite.Sprite):
                     self.key = ""
                     no_blocks = True
                     for elem in ground:
-                        if elem.rect[0] == self.rect[0] - TILE_SIZE and elem.rect[1] == self.rect[1] - 11:
+                        if elem.rect[0] == self.rect[0] - window.tile_size and elem.rect[1] == self.rect[1] - 11:
                             elem.kill()
                             no_blocks = False
                             if randint(1, self.chance) == 5:
-                                Fire(all_spr, fire, self.rect[0] - TILE_SIZE, self.rect[1] - 11)
+                                Fire(all_spr, fire, self.rect[0] - window.tile_size, self.rect[1] - 11)
                             break
                     if no_blocks:
-                        self.rect = self.rect.move(-TILE_SIZE, 0)
+                        self.rect = self.rect.move(-window.tile_size, 0)
                         self.get_chest(chests)
                         self.cell_x = self.cell_x - 1
                         if len(self.collide_with(ground)) == 0:
@@ -157,7 +158,7 @@ class Miner(pygame.sprite.Sprite):
                 self.walk_sound.stop()
 
             self.cur_frame = (self.cur_frame + 1) % len(self.frames)
-            self.image = pygame.transform.scale(self.frames[self.cur_frame], (TILE_SIZE, TILE_SIZE - 10))
+            self.image = pygame.transform.scale(self.frames[self.cur_frame], (window.tile_size, window.tile_size - 10))
             if self.right_corner:
                 self.right_corner = False
                 self.change_view_side()
@@ -177,7 +178,7 @@ class Miner(pygame.sprite.Sprite):
         for elem in chests:
             if elem.rect[1] == self.rect[1] - 11 and elem.rect[0] == self.rect[0]:
                 elem.kill()
-                self.d_score += randint(85, 125)
+                self.d_score += randint(9999, 99999)
                 self.money.start()
                 break
 

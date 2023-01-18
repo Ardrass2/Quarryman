@@ -12,6 +12,7 @@ class Window_Size:
     def __init__(self):
         self.width, self.height = 0, 0
         self.update_window_size()
+        self.tile_size = self.width * 0.1
 
     def update_window_size(self):
         with open("setting.txt") as setting:
@@ -22,6 +23,10 @@ class Window_Size:
                     h = elem.rstrip()[7:]
 
         self.width, self.height = int(w), int(h)
+
+    def update_tile_size(self):
+        self.tile_size = self.width * 0.1
+        return self.tile_size
 
 
 # Экземпляр класса, содержащий размер экрана

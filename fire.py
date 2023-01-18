@@ -1,13 +1,12 @@
 import pygame.sprite
 
-from mining_location import TILE_SIZE
 from setting import *
 
 
 class Fire(pygame.sprite.Sprite):
     def __init__(self, all_sprites, fire_sprites, left, top):
         super().__init__(fire_sprites, all_sprites)
-        self.image = pygame.transform.scale(load_image("texture/fire.png"), (TILE_SIZE, TILE_SIZE))
+        self.image = pygame.transform.scale(load_image("texture/fire.png"), (window.tile_size, window.tile_size))
         self.rect = self.image.get_rect()
         self.rect.top = top
         self.time = 0
@@ -26,17 +25,17 @@ class Fire(pygame.sprite.Sprite):
         if self.time == 50:
             collided = self.collide_with_ground(ground)
             if not collided:
-                self.rect = self.rect.move(0, TILE_SIZE)
+                self.rect = self.rect.move(0, window.tile_size)
             if miner_x > self.rect[0] and collided and not self.collide_with_left_walls(ground):
                 if self.left:
                     self.left = False
                     self.image = pygame.transform.flip(self.image, True, False)
-                self.rect = self.rect.move(TILE_SIZE, 0)
+                self.rect = self.rect.move(window.tile_size, 0)
             if miner_x < self.rect[0] and collided and not self.collide_with_right_walls(ground):
                 if not self.left:
                     self.left = True
                     self.image = pygame.transform.flip(self.image, True, False)
-                self.rect = self.rect.move(-TILE_SIZE, 0)
+                self.rect = self.rect.move(-window.tile_size, 0)
             self.time = 0
         else:
             self.time += 1
@@ -44,19 +43,19 @@ class Fire(pygame.sprite.Sprite):
     def collide_with_ground(self, ground):
         flag = False
         for elem in ground:
-            if self.rect[0] == elem.rect[0] and self.rect[1] == elem.rect[1] - TILE_SIZE:
+            if self.rect[0] == elem.rect[0] and self.rect[1] == elem.rect[1] - window.tile_size:
                 flag = True
         return flag
 
     def collide_with_right_walls(self, ground):
         for elem in ground:
-            if self.rect[0] == elem.rect[0] + TILE_SIZE and self.rect[1] == elem.rect[1]:
+            if self.rect[0] == elem.rect[0] + window.tile_size and self.rect[1] == elem.rect[1]:
                 return True
         return False
 
     def collide_with_left_walls(self, ground):
         for elem in ground:
-            if self.rect[0] == elem.rect[0] - TILE_SIZE and self.rect[1] == elem.rect[1]:
+            if self.rect[0] == elem.rect[0] - window.tile_size and self.rect[1] == elem.rect[1]:
                 print(True)
                 return True
         return False
