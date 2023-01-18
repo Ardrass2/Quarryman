@@ -1,5 +1,6 @@
 from random import randint
 
+from function import *
 from setting import *
 import pygame
 

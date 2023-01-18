@@ -1,3 +1,5 @@
+import pygame
+
 from function import *
 
 # Кадры в секунду
@@ -13,6 +15,18 @@ class Window_Size:
         self.width, self.height = 0, 0
         self.update_window_size()
         self.tile_size = self.width * 0.1
+        self.fullscreen = 0
+        self.update_display_mode()
+
+    def update_display_mode(self):
+        with open("setting.txt") as setting:
+            for elem in setting:
+                if elem.startswith("fullscreen="):
+                    f = elem.rstrip()[11:]
+        if int(f) == 1:
+            self.fullscreen = pygame.FULLSCREEN
+        else:
+            self.fullscreen = pygame.SCALED
 
     def update_window_size(self):
         with open("setting.txt") as setting:

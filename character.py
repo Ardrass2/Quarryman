@@ -178,7 +178,7 @@ class Miner(pygame.sprite.Sprite):
         for elem in chests:
             if elem.rect[1] == self.rect[1] - 11 and elem.rect[0] == self.rect[0]:
                 elem.kill()
-                self.d_score += randint(9999, 99999)
+                self.d_score += randint(85 * (get_current_level() + 1), 125 * (get_current_level() + 1))
                 self.money.start()
                 break
 

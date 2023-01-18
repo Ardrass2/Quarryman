@@ -135,6 +135,16 @@ def change_window_size(size):
     os.rename("sett.txt", "setting.txt")
 
 
+def update_window_mode():
+    f = 0
+    with open("setting.txt") as setting:
+        for elem in setting:
+            if elem.startswith("fullscreen="):
+                f = elem.rstrip()[11:]
+
+    return int(f)
+
+
 def update_window_size():
     with open("setting.txt") as setting:
         for elem in setting:
@@ -186,6 +196,20 @@ def change_sound_value(new_value):
     for elem in settings_in.readlines():
         if elem.startswith("sound_value="):
             settings_out.write("sound_value=" + str(new_value) + "\n")
+        else:
+            settings_out.write(elem)
+    settings_in.close()
+    settings_out.close()
+    os.remove("setting.txt")
+    os.rename("sett.txt", "setting.txt")
+
+
+def change_display_mode(mode: int):
+    settings_in = open("setting.txt", "r")
+    settings_out = open("sett.txt", "w")
+    for elem in settings_in.readlines():
+        if elem.startswith("fullscreen="):
+            settings_out.write("fullscreen=" + str(mode) + "\n")
         else:
             settings_out.write(elem)
     settings_in.close()

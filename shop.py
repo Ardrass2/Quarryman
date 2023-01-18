@@ -1,11 +1,14 @@
 from setting import *
+import pygame_gui
+import setting
+import function
 
 
 class Upgrades:
     def __init__(self, clock):
         self.exit_dialog = None
         self.conf_dialog = None
-        self.window_surface = pygame.display.set_mode((window.width, window.height))
+        self.window_surface = pygame.display.set_mode((window.width, window.height), window.fullscreen)
         self.bg = pygame.transform.scale(load_image("texture/in_shop.png"), (window.width, window.height))
         self.manager = pygame_gui.UIManager((window.width, window.height))
         self.manager.get_theme().load_theme('theme.json')
@@ -71,7 +74,7 @@ class Upgrades:
                                              (window.width * 0.12, window.width * 0.12))
 
         size = window.width, window.height
-        self.screen = pygame.display.set_mode(size)
+        self.screen = pygame.display.set_mode(size, window.fullscreen)
 
     def cycle(self, clock):
         while True:
@@ -156,7 +159,7 @@ class Mines:
     def __init__(self, clock):
         self.exit_dialog = None
         self.conf_dialog = None
-        self.window_surface = pygame.display.set_mode((window.width, window.height))
+        self.window_surface = pygame.display.set_mode((window.width, window.height), window.fullscreen)
         self.bg = pygame.transform.scale(load_image("texture/in_shop.png"), (window.width, window.height))
         self.manager = pygame_gui.UIManager((window.width, window.height))
         self.manager.get_theme().load_theme('theme.json')
@@ -170,7 +173,8 @@ class Mines:
                 (window.width // 3 - (window.width * 0.24), window.height * 2 // 3 - (window.height * 0.05)),
                 (window.width * 0.25, window.height * 0.1)),
             text="3200$", manager=self.manager)
-        if get_current_level() == 1:
+        if get_current_level() >= 1:
+            self.buy_button_1.set_text("Куплено")
             self.buy_button_1.disable()
 
         self.buy_button_2 = pygame_gui.elements.UIButton(
@@ -180,6 +184,7 @@ class Mines:
                 (window.width * 0.25, window.height * 0.1)),
             text="15000$", manager=self.manager)
         if get_current_level() >= 2:
+            self.buy_button_2.set_text("Куплено")
             self.buy_button_2.disable()
 
         self.buy_button_3 = pygame_gui.elements.UIButton(
@@ -189,6 +194,7 @@ class Mines:
                 (window.width * 0.25, window.height * 0.1)),
             text="45000$", manager=self.manager)
         if get_current_level() == 3:
+            self.buy_button_3.set_text("Куплено")
             self.buy_button_3.disable()
 
         self.mine_1 = pygame.transform.scale(load_image("texture/dirt1.png"),
@@ -201,7 +207,7 @@ class Mines:
                                              (window.width * 0.15, window.width * 0.15))
 
         size = window.width, window.height
-        self.screen = pygame.display.set_mode(size)
+        self.screen = pygame.display.set_mode(size, window.fullscreen)
 
     def cycle(self, clock):
         while True:
@@ -278,7 +284,7 @@ class Inside_Shop:
     def __init__(self, clock):
         self.confirm_dialog = None
         self.exit_dialog = None
-        self.window_surface = pygame.display.set_mode((window.width, window.height))
+        self.window_surface = pygame.display.set_mode((window.width, window.height), window.fullscreen)
         self.bg = pygame.transform.scale(load_image("texture/in_shop.png"), (window.width, window.height))
         self.manager = pygame_gui.UIManager((window.width, window.height))
         self.manager.get_theme().load_theme('theme.json')

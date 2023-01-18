@@ -1,3 +1,4 @@
+import pygame
 import pygame_gui
 
 from setting import *
@@ -8,10 +9,10 @@ class Settings_Window:
         self.back_dialog = None
         self.confirm_dialog = None
         self.music = music
-        self.screen = pygame.display.set_mode((window.width, window.height))
+        self.screen = pygame.display.set_mode((window.width, window.height), window.fullscreen)
         self.sound_value = int(sound_volume * 100)
         self.music_value = int(music_volume * 100)
-        self.full_screen = "В окне"
+        self.full_screen = ""
         self.__init_elements()
         self.back = self.main_cycle(clock)
 
@@ -42,7 +43,10 @@ class Settings_Window:
             relative_rect=pygame.Rect(
                 (window.width // 2 - (window.width * 0.56), window.height - (window.height * 0.41)),
                 (window.width * 0.5, window.height * 0.1)), text="Музыка", manager=self.manager)
-
+        if window.fullscreen == pygame.SCALED:
+            self.full_screen = "В окне"
+        elif window.fullscreen == pygame.FULLSCREEN:
+            self.full_screen = "Полный экран"
         self.select_display_mode = pygame_gui.elements.UIDropDownMenu(
             relative_rect=pygame.Rect(
                 (window.width // 2 - (window.width * 0.15), window.height - (window.height * 0.7)),
@@ -106,18 +110,24 @@ class Settings_Window:
                     if event.ui_element == self.select_display_mode:
                         if event.text == "Полный экран":
                             self.full_screen = event.text
-                            pygame.display.toggle_fullscreen()
+                            self.screen = pygame.display.set_mode(update_window_size(), pygame.FULLSCREEN)
+                            change_display_mode(1)
                         else:
                             self.full_screen = event.text
-                            pygame.display.toggle_fullscreen()
+                            self.screen = pygame.display.set_mode(update_window_size(), pygame.SCALED)
+                            change_display_mode(0)
+                        window.update_display_mode()
+                        print(window.fullscreen)
                     if event.ui_element == self.select_display_size:
                         change_window_size((int(event.text[:event.text.index("x")]),
                                             int(event.text[event.text.index("x") + 1:])))
-                        pygame.display.set_mode((1600, 900))
-                        self.screen = pygame.display.set_mode(update_window_size())
                         if self.full_screen == "Полный экран":
-                            pygame.display.toggle_fullscreen()
+                            self.screen = pygame.display.set_mode(update_window_size(), pygame.FULLSCREEN)
+                        else:
+                            self.screen = pygame.display.set_mode(update_window_size(), pygame.SCALED)
+
                         window.update_window_size()
+                        window.update_tile_size()
                         self.__init_elements()
             self.manager.update(time_delta=time_delta)
             self.screen.blit(self.bg, (0, 0))

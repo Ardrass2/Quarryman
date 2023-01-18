@@ -1,4 +1,8 @@
 from setting import *
+import pygame_gui
+import pygame
+import os
+import sys
 
 
 class Grass(pygame.sprite.Sprite):

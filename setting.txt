@@ -1,5 +1,5 @@
-width=1920
-height=1080
+width=1440
+height=900
 music_value=0
-sound_value=0
-
+sound_value=2
+fullscreen=1

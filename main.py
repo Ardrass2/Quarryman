@@ -102,7 +102,7 @@ def start_mine():
                 tiles_group.draw(screen)
         screen.blit(bg, (0, 0))
         fire_group.update(digger, tiles_group, chests_group, digger.rect[0], digger.rect[1])
-        if scores >= 0:
+        if scores >= 0 and ok_but is None:
             scores += digger.update(tiles_group, chests_group, fire_group, all_sprites)
         if scores >= need_money and ok_but is None:
             ok_but = win(scores, manager, window.width, window.height)
@@ -191,11 +191,13 @@ def upper_world_cycle():
 
 
 def first_step():
+    global screen
     start = Start_Window(clock)
     if start.next_window == "setting":
         while start.next_window == "setting":
             setting_window = Settings_Window(clock, music)
             if setting_window.back == "back":
+                screen = pygame.display.set_mode((window.width, window.height), window.fullscreen)
                 start.__init__(clock)
                 start.next_window = start.main_cycle(clock)
     if start.next_window == "game":
@@ -212,7 +214,7 @@ if __name__ == '__main__':
     all_sprites = pygame.sprite.Group()
     all_borders = pygame.sprite.Group()
     tiles_group = pygame.sprite.Group()
-    screen = pygame.display.set_mode(size)
+    screen = pygame.display.set_mode(size, window.fullscreen)
     clock = pygame.time.Clock()
     first_step()
     sys.excepthook = except_hook

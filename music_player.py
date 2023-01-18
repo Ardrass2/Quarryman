@@ -2,7 +2,8 @@ import random
 
 import pygame
 
-from setting import music_volume, sound_volume
+from function import update_sound_value
+from setting import music_volume
 
 
 class Music:
@@ -23,7 +24,7 @@ class Music:
 class Sound:
     def __init__(self, sound, repeat_time=-1):
         self.repeat_time = repeat_time
-        self.value = sound_volume
+        self.value = update_sound_value()
         self.sound = pygame.mixer.Sound(f"data/music/{sound}.wav")
         self.sound.set_volume(self.value)
 
