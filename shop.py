@@ -21,13 +21,13 @@ class Upgrades:
             relative_rect=pygame.Rect(
                 (window.width // 3 - (window.width * 0.24), window.height // 2 * 1.1 - (window.height * 0.05)),
                 (window.width * 0.25, window.height * 0.1)),
-            text="Скорость - " + str(get_digger_speed()), manager=self.manager)
+            text="Скорость - " + str(6 - get_digger_speed()), manager=self.manager)
 
         self.label_2 = pygame_gui.elements.UILabel(
             relative_rect=pygame.Rect(
                 (window.width // 1.64 - (window.width * 0.24), window.height // 2 * 1.1 - (window.height * 0.05)),
                 (window.width * 0.25, window.height * 0.1)),
-            text="Удача - " + str(get_digger_luck()), manager=self.manager)
+            text="Удача - " + str(get_digger_luck() - 7), manager=self.manager)
 
         self.label_3 = pygame_gui.elements.UILabel(
             relative_rect=pygame.Rect(
@@ -99,7 +99,7 @@ class Upgrades:
                                 change_speed(-1)
                                 change_score(-14000)
                                 self.score.set_text("СЧЕТ - " + str(get_score()) + "$")
-                                self.label_1.set_text("Скорость - " + str(get_digger_speed()))
+                                self.label_1.set_text("Скорость - " + str(6 - get_digger_speed()))
                             else:
                                 self.buy_button_1.set_text("Максимум")
                                 self.buy_button_1.disable()
@@ -112,7 +112,7 @@ class Upgrades:
                                 change_luck(1)
                                 change_score(-2000)
                                 self.score.set_text("СЧЕТ - " + str(get_score()) + "$")
-                                self.label_2.set_text("Удача - " + str(get_digger_luck()))
+                                self.label_2.set_text("Удача - " + str(get_digger_luck() - 7))
                             else:
                                 self.buy_button_2.set_text("Максимум")
                                 self.buy_button_2.disable()
