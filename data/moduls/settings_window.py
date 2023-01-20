@@ -1,7 +1,7 @@
 import pygame
 import pygame_gui
 
-from setting import *
+from data.moduls.setting import *
 
 
 class Settings_Window:
@@ -117,7 +117,6 @@ class Settings_Window:
                             self.screen = pygame.display.set_mode(update_window_size(), pygame.SCALED)
                             change_display_mode(0)
                         window.update_display_mode()
-                        print(window.fullscreen)
                     if event.ui_element == self.select_display_size:
                         change_window_size((int(event.text[:event.text.index("x")]),
                                             int(event.text[event.text.index("x") + 1:])))

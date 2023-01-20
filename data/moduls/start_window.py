@@ -1,7 +1,7 @@
 import pygame_gui
 
-from function import *
-from setting import window, FPS
+from data.moduls.function import *
+from data.moduls.setting import window, FPS
 
 
 class Start_Window:

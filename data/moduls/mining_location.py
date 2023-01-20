@@ -1,7 +1,7 @@
 from random import randint
 
-from function import *
-from setting import *
+from data.moduls.function import *
+from data.moduls.setting import *
 import pygame
 
 number_of_chests = 5
@@ -21,7 +21,6 @@ class Border(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(load_image("texture/side_border.png"),
                                             (window.tile_size * 5, window.tile_size))
         if not left:
-            print(y)
             self.rect = self.image.get_rect().move(-6 * window.tile_size + dx,
                                                    (window.height * 2 // 3) + (y * window.tile_size) + dy)
         else:
@@ -32,7 +31,6 @@ class Border(pygame.sprite.Sprite):
 class Tile(pygame.sprite.Sprite):
     def __init__(self, size, y, all_sprites, tiles_group, mine_level):
         super().__init__(tiles_group, all_sprites)
-        print(mine_level)
         if mine_level == 0:
             if y < 1:
                 self.image = pygame.transform.scale(load_image("texture/grass.png"),

@@ -1,7 +1,7 @@
-from setting import *
 import pygame_gui
-import setting
-import function
+
+from data.moduls.function import *
+from data.moduls.setting import *
 
 
 class Upgrades:

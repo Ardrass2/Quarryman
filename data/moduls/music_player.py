@@ -2,8 +2,8 @@ import random
 
 import pygame
 
-from function import update_sound_value
-from setting import music_volume
+from data.moduls.function import update_sound_value
+from data.moduls.setting import music_volume
 
 
 class Music:

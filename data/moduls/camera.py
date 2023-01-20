@@ -1,4 +1,4 @@
-from setting import *
+from data.moduls.setting import *
 
 
 class Camera:

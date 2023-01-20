@@ -1,6 +1,7 @@
 import pygame.sprite
 
-from setting import *
+from data.moduls.setting import *
+from data.moduls.music_player import Sound
 
 
 class Fire(pygame.sprite.Sprite):
@@ -17,6 +18,7 @@ class Fire(pygame.sprite.Sprite):
         if self.rect.top < 0:
             self.kill()
         if miner_x == self.rect[0] and miner_y - 11 == self.rect[1]:
+            Sound("pain", 0).start()
             miner.health -= 1
             self.kill()
         if pygame.sprite.spritecollide(self, chests, pygame.sprite.collide_mask):
@@ -56,6 +58,5 @@ class Fire(pygame.sprite.Sprite):
     def collide_with_left_walls(self, ground):
         for elem in ground:
             if self.rect[0] == elem.rect[0] - window.tile_size and self.rect[1] == elem.rect[1]:
-                print(True)
                 return True
         return False

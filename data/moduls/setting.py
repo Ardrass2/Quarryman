@@ -1,6 +1,6 @@
 import pygame
 
-from function import *
+from data.moduls.function import *
 
 # Кадры в секунду
 FPS = 75

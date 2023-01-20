@@ -1,16 +1,16 @@
 # Quarryman GAME
 import pygame.sprite
 
-from camera import *
-from character import *
-from fire import *
-from first_location import *
-from mining_location import *
-from music_player import *
-from setting import *
-from settings_window import Settings_Window
-from shop import Inside_Shop
-from start_window import Start_Window
+from data.moduls.camera import *
+from data.moduls.character import *
+from data.moduls.fire import *
+from data.moduls.first_location import *
+from data.moduls.mining_location import *
+from data.moduls.music_player import *
+from data.moduls.setting import *
+from data.moduls.settings_window import Settings_Window
+from data.moduls.shop import Inside_Shop
+from data.moduls.start_window import Start_Window
 
 level_map = []
 
@@ -169,9 +169,6 @@ def upper_world_cycle():
                     manager.clear_and_reset()
                     global level_map
                     level_map = generate_mine(all_sprites, tiles_group, chests_group, int(get_level_look()))
-                    # for elem in level_map:
-                    #     print(len(elem))
-                    print(get_score())
                     generate_borders(all_sprites, all_borders)
                     start_mine()
                 if event.key == pygame.K_e and digger.check_collide(shop):

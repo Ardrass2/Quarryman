@@ -4,7 +4,7 @@ import pygame_gui
 import sqlite3
 import os
 import sys
-from setting import *
+from data.moduls.setting import *
 
 con = sqlite3.connect("data/Game_data")
 cur = con.cursor()

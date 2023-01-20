@@ -2,16 +2,17 @@ from random import randint
 
 import pygame.sprite
 
-from fire import Fire
-from music_player import Sound
-from setting import *
+from data.moduls.fire import Fire
+from data.moduls.music_player import Sound
+from data.moduls.setting import *
 
 
 class Miner(pygame.sprite.Sprite):
     def __init__(self, all_sprites, sheet, columns, rows, level_map):
         super().__init__(all_sprites)
-        self.destroy_sound = Sound("stone_destroy", 1)
+        self.destroy_sound = None
         self.walk_sound = Sound("steps", 1)
+        self.money = Sound("money", 0)
         self.money = Sound("money", 0)
         self.level_map = level_map
         self.action = {"stay": 2,
@@ -82,11 +83,10 @@ class Miner(pygame.sprite.Sprite):
             if self.cur_frame == 0:
                 if self.now_action != "d_under_person":
                     if self.act:
-                        self.destroy_sound.start()
+                        self.destroy_sound = None
             if self.cur_frame == 6:
                 if self.act:
-                    self.destroy_sound.stop()
-                    self.destroy_sound.start()
+                    self.destroy_sound = None
             if self.cur_frame == len(self.frames) - 1:
                 self.act = False
                 self.change_action("stay")
@@ -154,7 +154,7 @@ class Miner(pygame.sprite.Sprite):
                             self.key = "go under"
                             self.act = "go down"
 
-                self.destroy_sound.stop()
+                self.destroy_sound = None
                 self.walk_sound.stop()
 
             self.cur_frame = (self.cur_frame + 1) % len(self.frames)
