@@ -203,7 +203,7 @@ class Mines:
         self.mine_2 = pygame.transform.scale(load_image("texture/rock.png"),
                                              (window.width * 0.15, window.width * 0.15))
 
-        self.mine_3 = pygame.transform.scale(load_image("texture/rock_2.jpg"),
+        self.mine_3 = pygame.transform.scale(load_image("texture/rock_2.png"),
                                              (window.width * 0.15, window.width * 0.15))
 
         size = window.width, window.height
