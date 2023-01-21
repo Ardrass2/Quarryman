@@ -1,0 +1,74 @@
+{
+  "defaults": {
+    "colours": {
+      "normal_bg": "#45494e",
+      "hovered_bg": "#35393e",
+      "disabled_bg": "#25292e",
+      "selected_bg": "#193754",
+      "dark_bg": "#15191e",
+      "normal_text": "#c5cbd8",
+      "hovered_text": "#FFFFFF",
+      "selected_text": "#FFFFFF",
+      "disabled_text": "#6d736f",
+      "link_text": "#0000EE",
+      "link_hover": "#2020FF",
+      "link_selected": "#551A8B",
+      "text_shadow": "#777777",
+      "normal_border": "#DDDDDD",
+      "hovered_border": "#B0B0B0",
+      "disabled_border": "#808080",
+      "selected_border": "#8080B0",
+      "active_border": "#8080B0",
+      "filled_bar": "#f4251b",
+      "unfilled_bar": "#CCCCCC"
+    }
+  },
+  "button": {
+    "colours": {
+      "normal_bg": "#2F4F4F",
+      "normal_text": "#A64B00"
+    },
+    "font": {
+      "name": "multiround_pro",
+      "size": "24",
+      "regular_path": "data/MultiroundPro.otf"
+    }
+  },
+  "label": {
+    "colours": {
+      "normal_text": "#5CCCCC",
+      "dark_bg": "#FFFFFF00"
+    },
+    "font": {
+      "name": "multiround_pro",
+      "size": "36",
+      "regular_path": "data/MultiroundPro.otf"
+    },
+    "misc": {
+      "text_shadow": "1",
+      "text_shadow_size": "1",
+      "text_shadow_offset": "0,0"
+    }
+  },
+  "#mine_text": {
+    "colours": {
+      "normal_text": "#5CCCCC",
+      "dark_bg": "#FFFFFF00"
+    },
+    "font": {
+      "name": "multiround_pro",
+      "size": "28",
+      "regular_path": "data/MultiroundPro.otf"
+    }
+  },
+  "#help_text": {
+    "colours": {
+      "normal_text": "#A64B00"
+    },
+    "font": {
+      "name": "multiround_pro",
+      "size": "32",
+      "regular_path": "data/MultiroundPro.otf"
+    }
+  }
+}
