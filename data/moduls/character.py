@@ -2,6 +2,7 @@ from random import randint
 
 import pygame.sprite
 
+from data.moduls.function import load_image
 from data.moduls.fire import Fire
 from data.moduls.music_player import Sound
 from data.moduls.setting import *

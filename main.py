@@ -135,7 +135,7 @@ def upper_world_cycle():
     press_e = None
     exit_dialog = None
     manager = pygame_gui.UIManager((window.width, window.height))
-    manager.get_theme().load_theme('game_theme.json')
+    manager.get_theme().load_theme('theme.json')
 
     while True:
         time_delta = clock.tick(FPS) / 1000.0
@@ -143,8 +143,7 @@ def upper_world_cycle():
             press_e = pygame_gui.elements.UILabel(manager=manager, text="Нажмите E, чтобы войти",
                                                   relative_rect=pygame.Rect((window.width * 0.5, 0),
                                                                             (window.width * 0.5, window.height * 0.1)),
-                                                  object_id=pygame_gui.core.ObjectID(class_id='@game_text',
-                                                                                     object_id='#help_text'))
+                                                  object_id=pygame_gui.core.ObjectID(object_id='#help_text'))
         elif not (digger.check_collide(mine) or digger.check_collide(shop)) and press_e is not None:
             press_e = None
             manager.clear_and_reset()

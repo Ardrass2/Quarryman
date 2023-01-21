@@ -49,5 +49,26 @@
       "text_shadow_size": "1",
       "text_shadow_offset": "0,0"
     }
+  },
+  "#mine_text": {
+    "colours": {
+      "normal_text": "#5CCCCC",
+      "dark_bg": "#FFFFFF00"
+    },
+    "font": {
+      "name": "multiround_pro",
+      "size": "28",
+      "regular_path": "data/MultiroundPro.otf"
+    }
+  },
+  "#help_text": {
+    "colours": {
+      "normal_text": "#A64B00"
+    },
+    "font": {
+      "name": "multiround_pro",
+      "size": "32",
+      "regular_path": "data/MultiroundPro.otf"
+    }
   }
 }

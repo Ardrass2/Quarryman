@@ -201,19 +201,19 @@ class Mines:
             relative_rect=pygame.Rect(
                 (window.width // 3 - (window.width * 0.24), window.height // 2 * 1.135 - (window.height * 0.05)),
                 (window.width * 0.25, window.height * 0.1)),
-            text="Ветхий камень", manager=self.manager)
+            text="Ветхий камень", manager=self.manager, object_id=pygame_gui.core.ObjectID(object_id='#mine_text'))
 
         self.label_2 = pygame_gui.elements.UILabel(
             relative_rect=pygame.Rect(
                 (window.width // 1.64 - (window.width * 0.24), window.height // 2 * 1.135 - (window.height * 0.05)),
                 (window.width * 0.25, window.height * 0.1)),
-            text="Обычный камень", manager=self.manager)
+            text="Обычный камень", manager=self.manager, object_id=pygame_gui.core.ObjectID(object_id='#mine_text'))
 
         self.label_3 = pygame_gui.elements.UILabel(
             relative_rect=pygame.Rect(
                 (window.width // 1.12 - (window.width * 0.24), window.height // 2 * 1.135 - (window.height * 0.05)),
                 (window.width * 0.25, window.height * 0.1)),
-            text="Замшелый камень", manager=self.manager)
+            text="Замшелый камень", manager=self.manager, object_id=pygame_gui.core.ObjectID(object_id='#mine_text'))
 
         self.mine_1 = pygame.transform.scale(load_image("texture/dirt1.png"),
                                              (window.width * 0.13, window.width * 0.13))
