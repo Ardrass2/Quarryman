@@ -197,14 +197,32 @@ class Mines:
             self.buy_button_3.set_text("Куплено")
             self.buy_button_3.disable()
 
+        self.label_1 = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect(
+                (window.width // 3 - (window.width * 0.24), window.height // 2 * 1.135 - (window.height * 0.05)),
+                (window.width * 0.25, window.height * 0.1)),
+            text="Ветхий камень", manager=self.manager)
+
+        self.label_2 = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect(
+                (window.width // 1.64 - (window.width * 0.24), window.height // 2 * 1.135 - (window.height * 0.05)),
+                (window.width * 0.25, window.height * 0.1)),
+            text="Обычный камень", manager=self.manager)
+
+        self.label_3 = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect(
+                (window.width // 1.12 - (window.width * 0.24), window.height // 2 * 1.135 - (window.height * 0.05)),
+                (window.width * 0.25, window.height * 0.1)),
+            text="Замшелый камень", manager=self.manager)
+
         self.mine_1 = pygame.transform.scale(load_image("texture/dirt1.png"),
-                                             (window.width * 0.15, window.width * 0.15))
+                                             (window.width * 0.13, window.width * 0.13))
 
         self.mine_2 = pygame.transform.scale(load_image("texture/rock.png"),
-                                             (window.width * 0.15, window.width * 0.15))
+                                             (window.width * 0.13, window.width * 0.13))
 
         self.mine_3 = pygame.transform.scale(load_image("texture/rock_2.png"),
-                                             (window.width * 0.15, window.width * 0.15))
+                                             (window.width * 0.13, window.width * 0.13))
 
         size = window.width, window.height
         self.screen = pygame.display.set_mode(size, window.fullscreen)
@@ -271,9 +289,9 @@ class Mines:
                         return 1
             time_delta = clock.tick(FPS) / 1000.0
             self.window_surface.blit(self.bg, (0, 0))
-            self.screen.blit(self.mine_1, (window.width // 11, window.height // 3))
-            self.screen.blit(self.mine_2, (window.width // 2.68, window.height // 3))
-            self.screen.blit(self.mine_3, (window.width // 1.53, window.height // 3))
+            self.screen.blit(self.mine_1, (window.width // 6.5, window.height // 3 * 0.85))
+            self.screen.blit(self.mine_2, (window.width // 2.3, window.height // 3 * 0.85))
+            self.screen.blit(self.mine_3, (window.width // 1.4, window.height // 3 * 0.85))
             self.manager.update(time_delta=time_delta)
             self.manager.draw_ui(self.window_surface)
             pygame.display.update()
