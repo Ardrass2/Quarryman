@@ -70,5 +70,15 @@
       "size": "32",
       "regular_path": "data/MultiroundPro.otf"
     }
+  },
+  "#team_text": {
+    "colours": {
+      "normal_text": "gold"
+    },
+    "font": {
+      "name": "multiround_pro",
+      "size": "18",
+      "regular_path": "data/MultiroundPro.otf"
+    }
   }
 }
