@@ -4,6 +4,7 @@ from data.moduls.setting import window, FPS
 
 class Start_Window:
     def __init__(self, clock):
+        self.confirm_dialog = None
         self.window_surface = pygame.display.set_mode((window.width, window.height), window.fullscreen)
         self.background = pygame.transform.scale(load_image("texture/cave.jpg"), (window.width, window.height))
         self.manager = pygame_gui.UIManager((window.width, window.height))
